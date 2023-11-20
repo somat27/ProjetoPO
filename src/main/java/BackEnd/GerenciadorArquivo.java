@@ -17,8 +17,9 @@ public class GerenciadorArquivo {
     public static void salvarObjetos(List<Object> objetos, String nomeArquivo) {
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(nomeArquivo))) {
             outputStream.writeObject(objetos);
-            System.out.println("Objetos salvos com sucesso!");
+            System.out.println("Objetos salvos com sucesso em '" + nomeArquivo + "'.");
         } catch (IOException e) {
+            System.out.println("Erro ao salvar objetos em '" + nomeArquivo + "'.");
             e.printStackTrace();
         }
     }

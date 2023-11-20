@@ -13,8 +13,16 @@ public class ProjetoPO {
     /**
      * Carregar base de dados
      */ 
-    public static void carregarFicheiro(){
-        
+    public static List<Object> carregarFicheiro() {
+        List<Object> objetosLidos = GerenciadorArquivo.carregarObjetos("basededados.ser");
+
+        if (!objetosLidos.isEmpty()) {
+            System.out.println("Base de dados carregada com sucesso.");
+        } else {
+            System.out.println("A base de dados está vazia ou ocorreu um erro durante o carregamento.");
+        }
+
+        return objetosLidos;
     }
     /**
      * Sistema de Login e Verificação
@@ -79,7 +87,7 @@ public class ProjetoPO {
         uc1.adicionarSumario(sumario2);
 
         // Carregar objetos do arquivo
-        List<Object> objetosLidos = GerenciadorArquivo.carregarObjetos("basededados.ser");
+        List<Object> objetosLidos = carregarFicheiro();
 
         // Adicionar objetos a lista de objetos
         GerenciadorArquivo.adicionarProfessor(objetosLidos, professor1);
