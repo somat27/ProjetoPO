@@ -1,3 +1,11 @@
+BackEnd\SumarioAula.class
+BackEnd\Professor.class
+BackEnd\ASCIIGenerator.class
+BackEnd\Pessoa.class
+BackEnd\Curso.class
+BackEnd\Administrador.class
 BackEnd\GerenciadorArquivo.class
+BackEnd\Aluno.class
 FrontEnd\ProjetoPO.class
+BackEnd\UnidadeCurricular.class
 FrontEnd\PaginaMenus.class
