@@ -14,23 +14,30 @@ import java.util.List;
  */
 public class Curso implements Serializable {
     private String designacao;
+    private List<UnidadeCurricular> ucs = new ArrayList<>();
+    private List<Aluno> alunos = new ArrayList<>();  // Adicionando lista de alunos
     private Professor diretorCurso;
-    private List<UnidadeCurricular> ucs;
-    private List<Aluno> alunos;
 
-    public Curso(String designacao, Professor diretorCurso) {
+    public Curso(String designacao) {
         this.designacao = designacao;
-        this.diretorCurso = diretorCurso;
-        this.ucs = new ArrayList<>();
-        this.alunos = new ArrayList<>();
     }
-    
+
+    // Adicione outros métodos e atributos conforme necessário
+
     public String getDesignacao() {
         return designacao;
     }
 
     public void setDesignacao(String designacao) {
         this.designacao = designacao;
+    }
+
+    public List<UnidadeCurricular> getUCs() {
+        return ucs;
+    }
+
+    public void setUCs(List<UnidadeCurricular> ucs) {
+        this.ucs = ucs;
     }
 
     public Professor getDiretorCurso() {
@@ -41,37 +48,15 @@ public class Curso implements Serializable {
         this.diretorCurso = diretorCurso;
     }
 
-    public List<UnidadeCurricular> getUcs() {
-        return ucs;
+    public void adicionarAluno(Aluno aluno) {
+        alunos.add(aluno);
     }
 
     public List<Aluno> getAlunos() {
         return alunos;
     }
     
-    // Métodos para adicionar e remover UCs e alunos do curso
     public void adicionarUC(UnidadeCurricular uc) {
         ucs.add(uc);
     }
-
-    public void removerUC(UnidadeCurricular uc) {
-        ucs.remove(uc);
-    }
-
-    public void adicionarAluno(Aluno aluno) {
-        alunos.add(aluno);
-    }
-
-    public void removerAluno(Aluno aluno) {
-        alunos.remove(aluno);
-    }
-    
-    /*
-        Diretor de Curso
-        Talvez usar um metodo para ir buscar a lista do curso e adicionar remover a partir de la
-        Remover a parte do curso do aluno e apenas deixar o numero mecatrnico
-    */
-    // Alterar Designação do curso
-    // Listar numero de professores do curso
-    // Listar numero de alunos do curso 
 }

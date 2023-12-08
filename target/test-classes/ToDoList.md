@@ -18,5 +18,69 @@ Diretor de Curso:
 2. Listar número de professores ou alunos por curso
 Deve ser possivel guardar a info toda em ficheiros a qualuqer momento, e essa info tem de ser sempre repuperável. 
 
+
+diagramas de classe:
+    nome classe
+    variaveis instancia
+    metodos
+
+RepositorioProfesores
+    lista array <professor>
+
+RepositorioCursos
+    lista array <Curso>
+
+RepositorioAlunos
+    lista array <Aluno>
+
+SistemaDepartamento
+    professores - RepositorioProfessores
+    curso - RepositorioCurso
+    aluno - RepositorioCurso
+    utilizadores - RepositorioUtilizadores
+    utilizadorligado - utilizador
+
+Professor
+    numero - int
+    nome - string
+    datainicio - localdate
+    servicodocente - RepositorioUC
+
+Curso
+    designacao - string
+    aluno - RepositorioAluno
+    uc -RepositorioProfessor
+    diretor - Professor
+
+UnidadeCurricular
+    designacao - string
+    regente - Professor
+    equipa - RepositorioProfessores
+    aula - RepositorioSumario
+
+sumario
+    titulo - string
+    tipo - string
+    sumario - string
+    data - localdatetime
+    presencas - RepositorioAluno
+
+Aluno
+    numero - int
+    nome - string
+    curso - Curso
+
+UC
+    designacao - string
+    regente - Professor
+    equipa - RepositorioProfessores
+    aula- RepositorioSumarios
+
+Utilizador
+    username - string
+    password - string
+
+Administrador
+
 Bibliografia
     ASCII : https://mkyong.com/java/ascii-art-java-example/

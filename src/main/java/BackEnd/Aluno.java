@@ -11,12 +11,15 @@ import java.io.Serializable;
  * @author tomas
  */
 public class Aluno extends Pessoa implements Serializable {
-    private Curso curso;
+     private Curso curso;
 
-    public Aluno(String nome, String numeroMecanografico, Curso curso) {
+    public Aluno(String nome, String numeroMecanografico, UnidadeCurricular uc) {
         super(nome, numeroMecanografico);
-        this.curso = curso;
+        // Atribuir o curso com base na UC (exemplo simples, ajuste conforme necessário)
+        this.curso = new Curso("Curso Padrão");
     }
+
+    // Adicione outros métodos e atributos conforme necessário
 
     public Curso getCurso() {
         return curso;

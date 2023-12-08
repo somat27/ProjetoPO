@@ -5,9 +5,7 @@
 package BackEnd;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -16,20 +14,16 @@ import java.util.List;
 public class SumarioAula implements Serializable {
     private String titulo;
     private String tipo;
-    private String resumo;
+    private String sumario;
     private Date data;
-    private Professor professor;
-    private List<Aluno> alunos;
-    
-    public SumarioAula(String titulo, String tipo, String resumo, Date data, Professor professor) {
+
+    public SumarioAula(String titulo, String tipo, String sumario, Date data) {
         this.titulo = titulo;
         this.tipo = tipo;
-        this.resumo = resumo;
+        this.sumario = sumario;
         this.data = data;
-        this.professor = professor;
-        this.alunos = new ArrayList<>();
     }
-    
+
     public String getTitulo() {
         return titulo;
     }
@@ -46,12 +40,12 @@ public class SumarioAula implements Serializable {
         this.tipo = tipo;
     }
 
-    public String getResumo() {
-        return resumo;
+    public String getSumario() {
+        return sumario;
     }
 
-    public void setResumo(String resumo) {
-        this.resumo = resumo;
+    public void setSumario(String sumario) {
+        this.sumario = sumario;
     }
 
     public Date getData() {
@@ -62,19 +56,10 @@ public class SumarioAula implements Serializable {
         this.data = data;
     }
 
-    public Professor getProfessor() {
-        return professor;
-    }
+    // Se necessário, você pode adicionar outros métodos aqui
 
-    public void setProfessor(Professor professor) {
-        this.professor = professor;
-    }
-    
-    public List<Aluno> getAlunos() {
-        return alunos;
-    }
-
-    public void marcarPresenca(Aluno aluno) {
-        alunos.add(aluno);
+    @Override
+    public String toString() {
+        return String.format("SumárioAula{titulo='%s', tipo='%s', sumario='%s', data=%s}", titulo, tipo, sumario, data);
     }
 }

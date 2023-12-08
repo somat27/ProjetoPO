@@ -11,15 +11,29 @@ import java.io.Serializable;
  * @author tomas
  */
 public class Administrador implements Serializable {
-    // Adicionar Professor
-    // Remover Professor
-    // Editar Professor
-    // Registar Curso
-    // Editar Curso
-    // Registar Unidade Curricular 
-    // Editar Unidade Curricular
-    // Listar Cursos 
-    // Listar Unidades Curriculares
-    // Listar Alunos 
-    // Listar Professores 
+    private String username;
+    private String password;
+
+    public Administrador(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    // Outros métodos conforme necessário
+
+    @Override
+    public String toString() {
+        return "Administrador{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

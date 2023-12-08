@@ -18,7 +18,7 @@ public class Pessoa implements Serializable {
         this.nome = nome;
         this.numeroMecanografico = numeroMecanografico;
     }
-    
+
     public String getNome() {
         return nome;
     }

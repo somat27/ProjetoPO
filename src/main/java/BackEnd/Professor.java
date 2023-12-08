@@ -6,6 +6,8 @@ package BackEnd;
 
 import java.util.List;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -19,22 +21,33 @@ public class Professor extends Pessoa implements Serializable {
         super(nome, numeroMecanografico);
         this.dataInicioFuncoes = dataInicioFuncoes;
     }
-    
+
+    // Adicione outros métodos e atributos conforme necessário
+
     public String getDataInicioFuncoes() {
         return dataInicioFuncoes;
     }
+
     public void setDataInicioFuncoes(String dataInicioFuncoes) {
         this.dataInicioFuncoes = dataInicioFuncoes;
     }
-    
-    public void adicionarUC(UnidadeCurricular uc) {
-        servicoDocente.add(uc);
+
+    public List<UnidadeCurricular> getServicoDocente() {
+        return servicoDocente;
     }
-    public void removerUC(UnidadeCurricular uc) {
-        servicoDocente.remove(uc);
+
+    public void setServicoDocente(List<UnidadeCurricular> servicoDocente) {
+        this.servicoDocente = servicoDocente;
     }
     
-    // Criar Sumario
-    // Consultar lista de sumarios por UC e por tipo de aula
-    // Consultar serviço docente 
+    public void criarSumario(UnidadeCurricular uc, String titulo, String tipo, String sumario) {
+        // Verifica se o professor está associado à UC
+        if (servicoDocente.contains(uc)) {
+            SumarioAula novoSumario = new SumarioAula(titulo, tipo, sumario, new Date());
+            uc.adicionarSumario(novoSumario);
+            System.out.println("Sumário criado com sucesso.");
+        } else {
+            System.out.println("Erro: Professor não está associado à UC.");
+        }
+    }
 }
