@@ -54,15 +54,22 @@ public class Menus {
         for (Professor professor : universidade.getProfessores()) {
             System.out.println(professor.getNome());
         }
-
-        System.out.println("\nLista de UCs:");
-        for (UnidadeCurricular uc : universidade.getUCs()) {
-            System.out.println(uc.getDesignacao());
-        }
-
-        System.out.println("\nLista de Alunos:");
-        for (Aluno aluno : universidade.getAlunos()) {
-            System.out.println(aluno.getNome());
-        }
+        
+//        Professor novoProfessor = new Professor("Professor 123", "123", "01/03/2022");
+//        universidade.adicionarProfessor(novoProfessor);
+//        
+//        System.out.println("Lista de Professores antes da remoção:");
+//        for (Professor professor : universidade.getProfessores()) {
+//            System.out.println(professor.getNome());
+//        }
+//        
+//        universidade.removerProfessor("789");
+//
+//        System.out.println("\nLista de Professores após a remoção:");
+//        for (Professor professor : universidade.getProfessores()) {
+//            System.out.println(professor.getNome());
+//        }
+//
+//        ficheiro.guarda_dados(universidade);
     }
 }

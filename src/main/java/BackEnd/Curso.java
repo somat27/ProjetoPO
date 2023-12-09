@@ -59,4 +59,12 @@ public class Curso implements Serializable {
     public void adicionarUC(UnidadeCurricular uc) {
         ucs.add(uc);
     }
+    
+    public void removerAluno(String numeroMecanografico) {
+        alunos.removeIf(aluno -> aluno.getNumeroMecanografico().equals(numeroMecanografico));
+    }
+
+    public void removerUC(String designacao) {
+        ucs.removeIf(uc -> uc.getDesignacao().equals(designacao));
+    }
 }

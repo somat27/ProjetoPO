@@ -23,7 +23,7 @@ public class Ficheiro {
     }
     
     public static void guarda_dados(Universidade universidade) {
-        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream("Repositorio.bin"))) {
+        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream("Repositorio.bin", false))) { // false para substituir o ficheiro e nao acrescentar, visto que estamos a ler para a classe Universidade
             objectOut.writeObject(universidade);
             System.out.println("O estado foi salvo com sucesso no arquivo.");
         } catch (IOException e) {
@@ -44,7 +44,7 @@ public class Ficheiro {
     }
     
     public static void salvarAdministrador(Administrador administrador) {
-        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream("Administrador.bin"))) {
+        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream("Administrador.bin", false))) {
             objectOut.writeObject(administrador);
             System.out.println("Administrador salvo com sucesso no arquivo.");
         } catch (IOException e) {

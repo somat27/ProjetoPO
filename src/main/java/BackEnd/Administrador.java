@@ -5,6 +5,7 @@
 package BackEnd;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -26,14 +27,28 @@ public class Administrador implements Serializable {
     public String getPassword() {
         return password;
     }
+    
+    // Adicionar um novo professor à lista de professores da Universidade
+    public void adicionarProfessor(Universidade universidade, Professor novoProfessor) {
+        universidade.adicionarProfessor(novoProfessor);
+        System.out.println("Professor adicionado com sucesso à Universidade.");
+    }
 
-    // Outros métodos conforme necessário
+    // Apagar um professor da lista de professores da Universidade
+    public void apagarProfessor(Universidade universidade, String numeroMecanografico) {
+        if (universidade.removerProfessor(numeroMecanografico)) {
+            System.out.println("Professor removido com sucesso da Universidade.");
+        } else {
+            System.out.println("Professor não encontrado na lista da Universidade.");
+        }
+    }
 
-    @Override
-    public String toString() {
-        return "Administrador{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
+    // Alterar informações de um professor na lista de professores da Universidade
+    public void alterarInformacoesProfessor(Universidade universidade, String numeroMecanografico, Professor novasInformacoes) {
+        if (universidade.alterarInformacoesProfessor(numeroMecanografico, novasInformacoes)) {
+            System.out.println("Informações do professor alteradas com sucesso na Universidade.");
+        } else {
+            System.out.println("Professor não encontrado na lista da Universidade.");
+        }
     }
 }
