@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class Professor extends Pessoa implements Serializable {
     private String dataInicioFuncoes;
-    private List<UnidadeCurricular> servicoDocente;
+    private List<UnidadeCurricular> servicoDocente = new ArrayList<>();;
 
     public Professor(String nome, String numeroMecanografico, String dataInicioFuncoes) {
         super(nome, numeroMecanografico);
@@ -36,14 +36,13 @@ public class Professor extends Pessoa implements Serializable {
         return servicoDocente;
     }
 
-    public void setServicoDocente(List<UnidadeCurricular> servicoDocente) {
-        this.servicoDocente = servicoDocente;
+    public void adicionarAoServicoDocente(UnidadeCurricular uc) {
+        servicoDocente.add(uc);
     }
     
-    public void criarSumario(UnidadeCurricular uc, String titulo, String tipo, String sumario) {
+    public void criarSumario(UnidadeCurricular uc, SumarioAula novoSumario) {
         // Verifica se o professor está associado à UC
         if (servicoDocente.contains(uc)) {
-            SumarioAula novoSumario = new SumarioAula(titulo, tipo, sumario, new Date());
             uc.adicionarSumario(novoSumario);
             System.out.println("Sumário criado com sucesso.");
         } else {

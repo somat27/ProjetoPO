@@ -17,8 +17,13 @@ public class Consola {
         Leitor.nextLine();
     }
 
-    public void escreverAviso(String aviso) {
-        System.err.print(aviso + "\n");
+    public void escreverSeparador() {
+        System.err.println("-------------------------------------------------");
+        System.err.flush(); //limpar o terminal 
+    }
+
+    public void escreverErro(String aviso) {
+        System.err.println(aviso);
         System.err.flush(); //limpar o terminal 
     }
 
@@ -27,13 +32,21 @@ public class Consola {
         System.out.flush(); //limpar o terminal 
     }
 
-    public String lerString() {
+    public String lerString(String frase) {
+        System.out.print(frase);
         return Leitor.nextLine();
     }
 
-    public String lerStringFrase(String frase) {
-        escreverFrase(frase);
-        return Leitor.nextLine();
+    public String lerStringLowerCase(String frase) {
+        System.out.print(frase);
+        String input = Leitor.nextLine();
+        return input.toLowerCase();
+    }
+
+    public String lerStringUpperCase(String frase) {
+        System.out.print(frase);
+        String input = Leitor.nextLine();
+        return input.toUpperCase();
     }
 
     public int lerInteiro(String string) {
@@ -41,13 +54,13 @@ public class Consola {
         String texto;
 
         do {
-            escreverFrase(string);
+            System.out.print(string);
             texto = Leitor.nextLine();
 
             try {
                 numero = Integer.parseInt(texto);
             } catch (NumberFormatException e) {
-                escreverAviso(texto);
+                escreverErro(texto);
                 erroOpcaoInvalida();
             }
 

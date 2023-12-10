@@ -15,7 +15,7 @@ import java.util.List;
 public class Curso implements Serializable {
     private String designacao;
     private List<UnidadeCurricular> ucs = new ArrayList<>();
-    private List<Aluno> alunos = new ArrayList<>();  // Adicionando lista de alunos
+    private List<Aluno> alunos = new ArrayList<>();
     private Professor diretorCurso;
 
     public Curso(String designacao) {

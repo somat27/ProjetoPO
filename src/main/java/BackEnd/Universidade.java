@@ -54,31 +54,45 @@ public class Universidade implements Serializable {
         }
         return alunos;
     }
-    
-    
+     
     public boolean removerProfessor(String numeroMecanografico) {
         return professores.removeIf(professor -> professor.getNumeroMecanografico().equals(numeroMecanografico));
     }
     
-    public boolean alterarInformacoesProfessor(String numeroMecanografico, Professor novasInformacoes) {
+    public boolean alterarInformacoesProfessor(String numeroMecanografico, String novoNome) {
         for (Professor professor : professores) {
             if (professor.getNumeroMecanografico().equals(numeroMecanografico)) {
-                professor.setNome(novasInformacoes.getNome());
-                // Adicione outras alterações necessárias
-
+                professor.setNome(novoNome);
                 return true;
             }
         }
         return false;
     }
     
-    
     public void removerAluno(String numeroMecanografico) {
         cursos.forEach(curso -> curso.removerAluno(numeroMecanografico));
     }
     
-
     public void removerUC(String designacao) {
         cursos.forEach(curso -> curso.removerUC(designacao));
     }
+    
+    public Professor encontrarProfessor(String numeroMecanografico) {
+        for (Professor professor : professores) {
+            if (professor.getNumeroMecanografico().equals(numeroMecanografico)) {
+                return professor;
+            }
+        }
+        return null;
+    }
+    
+    public boolean verificarProfessor(String numeroMecanografico) {
+        for (Professor professor : professores) {
+            if (professor.getNumeroMecanografico().equals(numeroMecanografico)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

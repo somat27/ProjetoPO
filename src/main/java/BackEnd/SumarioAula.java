@@ -55,11 +55,4 @@ public class SumarioAula implements Serializable {
     public void setData(Date data) {
         this.data = data;
     }
-
-    // Se necessário, você pode adicionar outros métodos aqui
-
-    @Override
-    public String toString() {
-        return String.format("SumárioAula{titulo='%s', tipo='%s', sumario='%s', data=%s}", titulo, tipo, sumario, data);
-    }
 }

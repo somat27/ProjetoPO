@@ -48,4 +48,11 @@ public class UnidadeCurricular implements Serializable {
     public List<SumarioAula> getSumarios() {
         return sumarios;
     }
+
+    public List<SumarioAula> consultarSumariosPorTipoAula(String tipoAula) {
+        // Filtrar sumários por tipo de aula
+        return sumarios.stream()
+                .filter(sumario -> sumario.getTipo().equals(tipoAula))
+                .toList();
+    }
 }
