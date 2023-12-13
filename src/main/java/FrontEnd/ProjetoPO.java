@@ -13,8 +13,7 @@ public class ProjetoPO {
     public static void main(String[] args) throws Exception {
         Universidade universidade;
         Consola consola = new Consola();
-        String repositorio = String.format("%s\\Repositorio.bin", System.getProperty("user.dir")); //path do ficheiro
-        Ficheiro ficheiro = new Ficheiro(repositorio);
+        Ficheiro ficheiro = new Ficheiro("Repositorio.ser");
         
         if (!ficheiro.getFile().exists()) {
             universidade = new Universidade();

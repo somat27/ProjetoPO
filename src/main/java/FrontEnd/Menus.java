@@ -9,8 +9,6 @@ import BackEnd.*;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.InputMismatchException;
 
 /**
  *
@@ -29,7 +27,8 @@ public class Menus {
         this.administrador = administrador;
     }
     
-    public void MenuLogin() {
+    public void MenuLogin() throws InterruptedException {
+        consola.escreverFrase("Menu Login");
         String usernameInput = null;
         String passwordInput = null;
         boolean loggedIn = false;
@@ -43,7 +42,6 @@ public class Menus {
                     loggedIn = true;                    
                 }
             } else if (universidade.verificarProfessor(usernameInput)) {
-                // Se o input corresponde a um professor ou regente
                 consola.escreverFrase("Login bem-sucedido como Professor/Regente!\n");
                 loggedIn = true;
             } else {
@@ -107,8 +105,13 @@ public class Menus {
         ficheiro.guarda_dados(universidade);
     }
     
-    public void MenuProfessor(Professor professor) {
+    public void MenuProfessor(Professor professor) throws InterruptedException {
         List<UnidadeCurricular> servicoDocente = professor.getServicoDocente();
+        if (servicoDocente.size() < 1){
+            consola.escreverErro("Nao tens Disciplinas associadas a ti!");
+            consola.PressEntertoContinue();
+            MenuLogin();
+        }
         List<SumarioAula> sumarios = null;
         int opcao = 0;
         do {
@@ -118,86 +121,83 @@ public class Menus {
             consola.escreverFrase("3. Consultar lista de sumários por tipo de aula");
             consola.escreverFrase("4. Consultar serviço docente");
             consola.escreverFrase("0. Sair");
-            try {
-                opcao = consola.lerInteiro("Escolha uma opção: "); 
+            opcao = consola.lerInteiro("Escolha uma opção: "); 
 
-                switch (opcao) {
-                    case 1:
-                        consola.escreverFrase("Escolha a Unidade Curricular para criar um Sumário:");
-                        for (int i = 0; i < servicoDocente.size(); i++) {
-                            consola.escreverFrase((i + 1) + ". " + servicoDocente.get(i).getDesignacao());
-                        }
+            switch (opcao) {
+                case 1:
+                    consola.escreverFrase("Escolha a Unidade Curricular para criar um Sumário:");
+                    for (int i = 0; i < servicoDocente.size(); i++) {
+                        consola.escreverFrase((i + 1) + ". " + servicoDocente.get(i).getDesignacao());
+                    }
 
-                        int escolha;
-                        do {
-                            escolha = consola.lerInteiro("Escolha o número correspondente à Unidade Curricular:");
-                        } while (escolha < 1 || escolha > servicoDocente.size());
-                        
-                        consola.escreverFrase("Criar Sumário:");
-                        
-                        String titulo;
-                        titulo = consola.lerString("\tTítulo da Aula:");
+                    int escolha;
+                    do {
+                        escolha = consola.lerInteiro("Escolha o número correspondente à Unidade Curricular:");
+                    } while (escolha < 1 || escolha > servicoDocente.size());
 
-                        String tipoAula;
+                    consola.escreverFrase("Criar Sumário:");
+
+                    String titulo;
+                    titulo = consola.lerString("\tTítulo da Aula:");
+
+                    String tipoAula = "";
+                    while (!tipoAula.equals("teorica") && !tipoAula.equals("pratica") && !tipoAula.equals("laboratorial")) {
                         tipoAula = consola.lerStringLowerCase("\tTipo de Aula (TEORICA, PRATICA, LABORATORIAL): ");
+                    }
 
-                        String conteudo;
-                        conteudo = consola.lerString("\tConteúdo da Aula:");
+                    String conteudo;
+                    conteudo = consola.lerString("\tConteúdo da Aula:");
 
-                        LocalDateTime agora = LocalDateTime.now();
-                        Date date = java.sql.Timestamp.valueOf(agora);
+                    SumarioAula novoSumario = new SumarioAula(titulo, tipoAula, conteudo, consola.getHoraAtual());
 
-                        SumarioAula novoSumario = new SumarioAula(titulo, tipoAula, conteudo, date);
-                        
-                        professor.criarSumario(servicoDocente.get(escolha - 1), novoSumario);
-                        
-                        ficheiro.guarda_dados(universidade);
-                        break;
-                    case 2:
-                        for (int i = 0; i < servicoDocente.size(); i++) {
-                            consola.escreverFrase(servicoDocente.get(i).getDesignacao() + ":");
-                            sumarios = servicoDocente.get(i).getSumarios();
-                            for (SumarioAula sumario : sumarios) {
-                                consola.escreverFrase("\tTitulo: " + sumario.getTitulo());
-                                consola.escreverFrase("\tTipo Aula: " + sumario.getTipo());
-                                consola.escreverFrase("\tSumario: " + sumario.getSumario());
-                                consola.escreverFrase("\tData: " + sumario.getData());
-                                consola.escreverFrase("");
-                            }
+                    professor.criarSumario(servicoDocente.get(escolha - 1), novoSumario);
+
+                    ficheiro.guarda_dados(universidade);
+                    
+                    consola.PressEntertoContinue();
+                    break;
+                case 2:
+                    for (int i = 0; i < servicoDocente.size(); i++) {
+                        consola.escreverFrase(servicoDocente.get(i).getDesignacao() + ":");
+                        sumarios = servicoDocente.get(i).getSumarios();
+                        for (SumarioAula sumario : sumarios) {
+                            consola.escreverFrase("\tTitulo: " + sumario.getTitulo());
+                            consola.escreverFrase("\tTipo Aula: " + sumario.getTipo());
+                            consola.escreverFrase("\tSumario: " + sumario.getSumario());
+                            consola.escreverFrase("\tData: " + sumario.getData());
+                            consola.escreverFrase("");
                         }
-                        break;
-                    case 3:
-                        String tipoSumario;
-                        tipoSumario = consola.lerStringLowerCase("Tipo de Aula (TEORICA, PRATICA, LABORATORIAL): ");
-                        for (UnidadeCurricular uc : servicoDocente) {
-                            sumarios = uc.consultarSumariosPorTipoAula(tipoSumario);
-                            for (SumarioAula sumario : sumarios) {
-                                consola.escreverSeparador();
-                                consola.escreverFrase("Titulo: " + sumario.getTitulo());
-                                consola.escreverFrase("Sumario: " + sumario.getSumario());
-                                consola.escreverFrase("Data: " + sumario.getData());
-                                consola.escreverSeparador();
-                            }
+                    }
+                    consola.PressEntertoContinue();
+                    break;
+                case 3:
+                    String tipoSumario = "";
+                    while (!tipoSumario.equals("teorica") && !tipoSumario.equals("pratica") && !tipoSumario.equals("laboratorial")) {
+                        tipoSumario = consola.lerStringLowerCase("\tTipo de Aula (TEORICA, PRATICA, LABORATORIAL): ");
+                    }
+                    for (UnidadeCurricular uc : servicoDocente) {
+                        sumarios = uc.consultarSumariosPorTipoAula(tipoSumario);
+                        for (SumarioAula sumario : sumarios) {
+                            consola.escreverSeparador();
+                            consola.escreverFrase("Titulo: " + sumario.getTitulo());
+                            consola.escreverFrase("Sumario: " + sumario.getSumario());
+                            consola.escreverFrase("Data: " + sumario.getData());
                         }
-                        break;
-                    case 4:
-                        consola.escreverFrase("Serviço Docente:");
-                        for (UnidadeCurricular uc : servicoDocente) {
-                            consola.escreverFrase("\t" + uc.getDesignacao());
-                        }
-                        consola.escreverSeparador();
-                        break;
-                    case 0:
-                        consola.escreverFrase("Saindo do Menu Professor.");
-                        break;
-                    default:
-                        consola.escreverErro("Opção inválida. Tente novamente.");
-                }
-            } catch (InputMismatchException e) {
-                consola.escreverErro("Por favor, insira um número válido.");
+                    }
+                    consola.PressEntertoContinue();
+                    break;
+                case 4:
+                    consola.escreverFrase("Serviço Docente:");
+                    for (UnidadeCurricular uc : servicoDocente) {
+                        consola.escreverFrase("\t" + uc.getDesignacao());
+                    }
+                    break;
+                case 0:
+                    consola.escreverFrase("Saindo do Menu Professor.");
+                    break;
+                default:
+                    consola.escreverErro("Opção inválida. Tente novamente.");
             }
         } while (opcao != 0);
-        
-        //ficheiro.guarda_dados(universidade);
     }
 }

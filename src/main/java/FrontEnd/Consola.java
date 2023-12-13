@@ -4,6 +4,8 @@
  */
 package FrontEnd;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 /**
  *
@@ -67,5 +69,16 @@ public class Consola {
         } while (numero == null);
 
         return numero;
+    }
+    
+    public void PressEntertoContinue(){
+        System.out.println("Pressione Enter para continuar...");
+        Leitor.nextLine();
+    }
+    
+    public String getHoraAtual() {
+        LocalDateTime agora = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return agora.format(formatter);
     }
 }

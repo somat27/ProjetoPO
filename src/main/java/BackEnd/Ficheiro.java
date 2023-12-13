@@ -23,7 +23,7 @@ public class Ficheiro {
     }
     
     public static void guarda_dados(Universidade universidade) {
-        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream("Repositorio.bin", false))) { // false para substituir o ficheiro e nao acrescentar, visto que estamos a ler para a classe Universidade
+        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream("Repositorio.ser", false))) { // false para substituir o ficheiro e nao acrescentar, visto que estamos a ler para a classe Universidade
             objectOut.writeObject(universidade);
             System.out.println("O estado foi salvo com sucesso no arquivo.");
         } catch (IOException e) {
@@ -34,7 +34,7 @@ public class Ficheiro {
     public static Universidade carregar_dados() {
         Universidade universidade = null;
         
-        try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream("Repositorio.bin"))) {
+        try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream("Repositorio.ser"))) {
             universidade = (Universidade) objectIn.readObject();
         }catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -44,7 +44,7 @@ public class Ficheiro {
     }
     
     public static void salvarAdministrador(Administrador administrador) {
-        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream("Administrador.bin", false))) {
+        try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream("Administrador.ser", false))) {
             objectOut.writeObject(administrador);
             System.out.println("Administrador salvo com sucesso no arquivo.");
         } catch (IOException e) {
@@ -53,7 +53,7 @@ public class Ficheiro {
     }
     
     public static Administrador carregarAdministrador() {
-        try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream("Administrador.bin"))) {
+        try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream("Administrador.ser"))) {
             return (Administrador) objectIn.readObject();
         } catch (IOException | ClassNotFoundException e) {
             return null;

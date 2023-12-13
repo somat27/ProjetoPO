@@ -15,9 +15,9 @@ public class SumarioAula implements Serializable {
     private String titulo;
     private String tipo;
     private String sumario;
-    private Date data;
+    private String data;
 
-    public SumarioAula(String titulo, String tipo, String sumario, Date data) {
+    public SumarioAula(String titulo, String tipo, String sumario, String data) {
         this.titulo = titulo;
         this.tipo = tipo;
         this.sumario = sumario;
@@ -48,11 +48,11 @@ public class SumarioAula implements Serializable {
         this.sumario = sumario;
     }
 
-    public Date getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(String data) {
         this.data = data;
     }
 }
