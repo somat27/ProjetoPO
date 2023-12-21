@@ -9,6 +9,7 @@ import BackEnd.*;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  *
@@ -123,10 +124,12 @@ public class Menus {
         UnidadeCurricular uc2 = new UnidadeCurricular("Banco de Dados", professor2);
 
         curso1.adicionarUC(uc1);
-        curso2.adicionarUC(uc2);
+        curso1.adicionarUC(uc2);
         
+        uc1.adicionarEquipaDocente(professor1);
         professor1.adicionarAoServicoDocente(uc1);
-        professor1.adicionarAoServicoDocente(uc2);
+        uc2.adicionarEquipaDocente(professor2);
+        professor2.adicionarAoServicoDocente(uc2);
 
         // Adicionar alunos
         Aluno aluno1 = new Aluno("Pedro", "789");
@@ -166,7 +169,7 @@ public class Menus {
             consola.escreverFrase("2. Consultar lista de sumários por UC");
             consola.escreverFrase("3. Consultar lista de sumários por tipo de aula");
             consola.escreverFrase("4. Consultar serviço docente");
-            consola.escreverFrase("0. Sair");
+            consola.escreverFrase("0. Voltar");
             opcao = consola.lerInteiro("Escolha uma opção: "); 
 
             switch (opcao) {
@@ -180,6 +183,8 @@ public class Menus {
                     do {
                         escolha = consola.lerInteiro("Escolha o número correspondente à Unidade Curricular:");
                     } while (escolha < 1 || escolha > servicoDocente.size());
+                    
+                    UnidadeCurricular UnidadeEscolhida = servicoDocente.get(escolha - 1);
 
                     consola.escreverFrase("Criar Sumário:");
 
@@ -193,10 +198,33 @@ public class Menus {
 
                     String conteudo;
                     conteudo = consola.lerString("\tConteúdo da Aula:");
+                    
+                    List<Aluno> assiduidadeAlunos = new ArrayList<>();;
+                    Curso cursoAssociado = null;
+                    List<Curso> cursos = universidade.getCursos();
+                    for (Curso curso : cursos) {
+                        List<UnidadeCurricular> ucs = curso.getUCs();
+                        for (UnidadeCurricular uc : ucs) {
+                            if (uc.equals(UnidadeEscolhida)) {
+                                cursoAssociado = curso;
+                                break;
+                            }
+                        }
+                    }
+                    for (Aluno alunos : cursoAssociado.getAlunos()) {
+                        System.out.println(alunos.getNome()+"->"+alunos.getNumeroMecanografico());
+                        String presenca = "";
+                        while (!presenca.equals("sim") && !presenca.equals("nao")) {
+                            presenca = consola.lerStringLowerCase("\tEste aluno esta presente? (SIM, NAO): ");
+                        }
+                        if(presenca.equals("sim")){
+                            assiduidadeAlunos.add(alunos);
+                        }
+                    }
+                    
+                    SumarioAula novoSumario = new SumarioAula(titulo, tipoAula, conteudo, consola.getHoraAtual(), assiduidadeAlunos);
 
-                    SumarioAula novoSumario = new SumarioAula(titulo, tipoAula, conteudo, consola.getHoraAtual());
-
-                    professor.criarSumario(servicoDocente.get(escolha - 1), novoSumario);
+                    professor.criarSumario(UnidadeEscolhida, novoSumario);
 
                     ficheiro.guarda_dados(universidade);
                     
@@ -266,7 +294,7 @@ public class Menus {
             consola.escreverFrase("\nMenu Diretor de Curso:");
             consola.escreverFrase("1. Alterar designação do Curso.");
             consola.escreverFrase("2. Listar número de professores ou alunos por curso.");
-            consola.escreverFrase("0. Sair");
+            consola.escreverFrase("0. Voltar");
             opcao = consola.lerInteiro("Escolha uma opção: "); 
 
             switch (opcao) {
@@ -278,10 +306,10 @@ public class Menus {
                     ficheiro.guarda_dados(universidade);
                     break;
                 case 2:
-                      int n_alunos = cursoAssociado.getAlunos().size();
-                      consola.escreverFrase("Numero de alunos do curso " + cursoAssociado.getDesignacao() +": " + n_alunos );
-                      int n_profs = cursoAssociado.getNumeroProfessores();
-                      consola.escreverFrase("Numero de professores do curso " + cursoAssociado.getDesignacao() +": " + n_profs);
+                    int n_alunos = cursoAssociado.getAlunos().size();
+                    consola.escreverFrase("Numero de alunos do curso " + cursoAssociado.getDesignacao() +": " + n_alunos );
+                    int n_profs = cursoAssociado.getNumeroProfessores();
+                    consola.escreverFrase("Numero de professores do curso " + cursoAssociado.getDesignacao() +": " + n_profs);
                     break;
                 case 0:
                     consola.escreverFrase("Saindo do Menu Diretor de Curso.");
@@ -302,6 +330,7 @@ public class Menus {
                 if (uc.getRegente().equals(professor)) {
                     cursoAssociado = curso;
                     UnidadeCurricularAssociada = uc;
+                    break;
                 }
             }
         }
@@ -316,7 +345,7 @@ public class Menus {
             consola.escreverFrase("1. Adicionar aluno ao curso.");
             consola.escreverFrase("2. Remover aluno do curso.");
             consola.escreverFrase("3. Consultar assiduidade de determinado aluno.");
-            consola.escreverFrase("0. Sair");
+            consola.escreverFrase("0. Voltar");
             opcao = consola.lerInteiro("Escolha uma opção: "); 
 
             switch (opcao) {
@@ -346,7 +375,33 @@ public class Menus {
                     }
                     break;
                 case 3:
-                    // Lógica para consultar assiduidade do aluno
+                    boolean encontrado = false;
+                    String numeroAlunoPresenca = null;
+                    while (!encontrado) {
+                        numeroAlunoPresenca = consola.lerString("Numero aluno:");
+                        List<Aluno> listaAlunos = cursoAssociado.getAlunos();
+                        for (Aluno aluno : listaAlunos) {
+                            if (aluno.getNumeroMecanografico().equals(numeroAlunoPresenca)){
+                                encontrado = true;
+                                break;
+                            }
+                        }
+                        if (!encontrado)
+                            System.out.println("Aluno nao encontrado, Tente novamente!");
+                    }
+                    int presencaAluno = 0;
+                    List<SumarioAula> sumarios = UnidadeCurricularAssociada.getSumarios();
+                    int Totalsumarios = UnidadeCurricularAssociada.getSumarios().size();
+                    List<Aluno> presencas = null;
+                    for (SumarioAula sumario : sumarios) {
+                        presencas = sumario.getListaAlunos();
+                        for (Aluno aluno : presencas) {
+                            if (aluno.getNumeroMecanografico().equals(numeroAlunoPresenca)){
+                                presencaAluno++;
+                            }
+                        }
+                    }
+                    System.out.println("O aluno tem " + presencaAluno + "/" + Totalsumarios + " presencas");
                     break;
                 case 0:
                     consola.escreverFrase("Saindo do Menu Regente Unidade Curricular.");

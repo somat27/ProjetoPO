@@ -5,7 +5,9 @@
 package BackEnd;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -16,12 +18,14 @@ public class SumarioAula implements Serializable {
     private String tipo;
     private String sumario;
     private String data;
+    private List<Aluno> assiduidadeAlunos = new ArrayList<>();
 
-    public SumarioAula(String titulo, String tipo, String sumario, String data) {
+    public SumarioAula(String titulo, String tipo, String sumario, String data, List<Aluno> assiduidadeAlunos) {
         this.titulo = titulo;
         this.tipo = tipo;
         this.sumario = sumario;
         this.data = data;
+        this.assiduidadeAlunos = assiduidadeAlunos;
     }
 
     public String getTitulo() {
@@ -54,5 +58,9 @@ public class SumarioAula implements Serializable {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public List<Aluno> getListaAlunos() {
+        return assiduidadeAlunos;
     }
 }

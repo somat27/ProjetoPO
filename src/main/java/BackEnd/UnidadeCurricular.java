@@ -55,4 +55,12 @@ public class UnidadeCurricular implements Serializable {
                 .filter(sumario -> sumario.getTipo().equals(tipoAula))
                 .toList();
     }
+
+    public List<Professor> getEquipaDocente() {
+        return equipeDocente;
+    }
+
+    public void adicionarEquipaDocente(Professor professor) {
+        equipeDocente.add(professor);
+    }
 }

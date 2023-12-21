@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class Professor extends Pessoa implements Serializable {
     private String dataInicioFuncoes;
-    private List<UnidadeCurricular> servicoDocente = new ArrayList<>();;
+    private List<UnidadeCurricular> servicoDocente = new ArrayList<>();
 
     public Professor(String nome, String numeroMecanografico, String dataInicioFuncoes) {
         super(nome, numeroMecanografico);

@@ -72,9 +72,7 @@ public class Curso implements Serializable {
     public int getNumeroProfessores() {
         int count = 0;
         for (UnidadeCurricular uc : ucs) {
-            if (uc.getRegente() != null) {
-                count++;
-            }
+            count += uc.getEquipaDocente().size();
         }
         return count;
     }
