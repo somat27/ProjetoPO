@@ -18,8 +18,9 @@ public class Curso implements Serializable {
     private List<Aluno> alunos = new ArrayList<>();
     private Professor diretorCurso;
 
-    public Curso(String designacao) {
+    public Curso(String designacao, Professor diretorCurso) {
         this.designacao = designacao;
+        this.diretorCurso = diretorCurso;
     }
 
     // Adicione outros métodos e atributos conforme necessário
@@ -66,5 +67,15 @@ public class Curso implements Serializable {
 
     public void removerUC(String designacao) {
         ucs.removeIf(uc -> uc.getDesignacao().equals(designacao));
+    }
+    
+    public int getNumeroProfessores() {
+        int count = 0;
+        for (UnidadeCurricular uc : ucs) {
+            if (uc.getRegente() != null) {
+                count++;
+            }
+        }
+        return count;
     }
 }

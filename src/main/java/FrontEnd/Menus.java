@@ -50,7 +50,53 @@ public class Menus {
         }
 
         if (universidade.verificarProfessor(usernameInput)) {
-            MenuProfessor(universidade.encontrarProfessor(usernameInput));
+            Professor professor = universidade.encontrarProfessor(usernameInput);
+            Curso cursoAssociado = null;
+            UnidadeCurricular UnidadeCurricularAssociada = null;
+            List<Curso> cursos = universidade.getCursos();
+            for (Curso curso : cursos) {
+                List<UnidadeCurricular> ucs = curso.getUCs();
+                for (UnidadeCurricular uc : ucs) {
+                    if (uc.getRegente().equals(professor)) {
+                        UnidadeCurricularAssociada = uc;
+                    }
+                }
+                if (curso.getDiretorCurso() != null && curso.getDiretorCurso().equals(professor)) {
+                    cursoAssociado = curso;
+                }
+            }
+            int opcao = 0;
+            do {
+                consola.escreverFrase("\nMenu Login Professor:");
+                consola.escreverFrase("1. Menu Professor");                
+                if (UnidadeCurricularAssociada != null) consola.escreverFrase("2. Menu Regente Unidade Curricular");
+                if (cursoAssociado != null) consola.escreverFrase("3. Menu Diretor de Curso");
+                consola.escreverFrase("0. Sair");
+                opcao = consola.lerInteiro("Escolha uma opção: "); 
+
+                switch (opcao) {
+                    case 1:
+                        MenuProfessor(professor);
+                        break;
+                    case 2:
+                        if (UnidadeCurricularAssociada != null) 
+                            MenuRegenteUnidadeCurricular(professor);
+                        else
+                            consola.escreverErro("Opção inválida. Tente novamente.");   
+                        break;
+                    case 3:
+                        if (cursoAssociado != null) 
+                            MenuDiretorCurso(professor);
+                        else
+                            consola.escreverErro("Opção inválida. Tente novamente.");
+                        break;
+                    case 0:
+                        consola.escreverFrase("Saindo...");
+                        break;
+                    default:
+                        consola.escreverErro("Opção inválida. Tente novamente.");
+                }
+            } while (opcao != 0);
         } else if (usernameInput.equals(administrador.getUsername())) {
             MenuAdministrador();
         }
@@ -66,8 +112,8 @@ public class Menus {
         universidade.adicionarProfessor(professor2);
 
         // Adicionar cursos
-        Curso curso1 = new Curso("Ciência da Computação");
-        Curso curso2 = new Curso("Engenharia de Software");
+        Curso curso1 = new Curso("Ciência da Computação", professor1);
+        Curso curso2 = new Curso("Engenharia de Software",professor2);
 
         universidade.adicionarCurso(curso1);
         universidade.adicionarCurso(curso2);
@@ -194,6 +240,116 @@ public class Menus {
                     break;
                 case 0:
                     consola.escreverFrase("Saindo do Menu Professor.");
+                    break;
+                default:
+                    consola.escreverErro("Opção inválida. Tente novamente.");
+            }
+        } while (opcao != 0);
+    }
+    
+    public void MenuDiretorCurso(Professor professor) throws InterruptedException {
+        Curso cursoAssociado = null;
+        List<Curso> cursos = universidade.getCursos();
+        for (Curso curso : cursos) {
+            if (curso.getDiretorCurso() != null && curso.getDiretorCurso().equals(professor)) {
+                cursoAssociado = curso;
+                break;
+            }
+        }
+        if (cursoAssociado == null){
+            consola.escreverErro("Nao és diretor de nenhum curso!");
+            consola.PressEntertoContinue();
+            MenuLogin();
+        }
+        int opcao = 0;
+        do {
+            consola.escreverFrase("\nMenu Diretor de Curso:");
+            consola.escreverFrase("1. Alterar designação do Curso.");
+            consola.escreverFrase("2. Listar número de professores ou alunos por curso.");
+            consola.escreverFrase("0. Sair");
+            opcao = consola.lerInteiro("Escolha uma opção: "); 
+
+            switch (opcao) {
+                case 1:
+                    String novaDesignacao = " ";
+                    novaDesignacao = consola.lerString("Escolha a nova designação para o curso " + cursoAssociado.getDesignacao() +":");
+                    cursoAssociado.setDesignacao(novaDesignacao);
+                    System.out.println("Designação do curso alterada para: " + novaDesignacao);
+                    ficheiro.guarda_dados(universidade);
+                    break;
+                case 2:
+                      int n_alunos = cursoAssociado.getAlunos().size();
+                      consola.escreverFrase("Numero de alunos do curso " + cursoAssociado.getDesignacao() +": " + n_alunos );
+                      int n_profs = cursoAssociado.getNumeroProfessores();
+                      consola.escreverFrase("Numero de professores do curso " + cursoAssociado.getDesignacao() +": " + n_profs);
+                    break;
+                case 0:
+                    consola.escreverFrase("Saindo do Menu Diretor de Curso.");
+                    break;
+                default:
+                    consola.escreverErro("Opção inválida. Tente novamente.");
+            }
+        } while (opcao != 0);
+    }
+    
+    public void MenuRegenteUnidadeCurricular(Professor professor) throws InterruptedException {
+        Curso cursoAssociado = null;
+        UnidadeCurricular UnidadeCurricularAssociada = null;
+        List<Curso> cursos = universidade.getCursos();
+        for (Curso curso : cursos) {
+            List<UnidadeCurricular> ucs = curso.getUCs();
+            for (UnidadeCurricular uc : ucs) {
+                if (uc.getRegente().equals(professor)) {
+                    cursoAssociado = curso;
+                    UnidadeCurricularAssociada = uc;
+                }
+            }
+        }
+        if (UnidadeCurricularAssociada == null){
+            consola.escreverErro("Nao és regente de nenhuma unidade curricular!");
+            consola.PressEntertoContinue();
+            MenuLogin();
+        }    
+        int opcao = 0;
+        do {
+            consola.escreverFrase("\nMenu Diretor de Curso:");
+            consola.escreverFrase("1. Adicionar aluno ao curso.");
+            consola.escreverFrase("2. Remover aluno do curso.");
+            consola.escreverFrase("3. Consultar assiduidade de determinado aluno.");
+            consola.escreverFrase("0. Sair");
+            opcao = consola.lerInteiro("Escolha uma opção: "); 
+
+            switch (opcao) {
+                case 1:
+                    String nomeAluno = consola.lerString("Nome do aluno:");
+                    String numeroAluno = consola.lerString("Número mecanográfico do aluno:");
+                    Aluno novoAluno = new Aluno(nomeAluno, numeroAluno); 
+                    cursoAssociado.adicionarAluno(novoAluno);
+                    ficheiro.guarda_dados(universidade);
+                    consola.escreverFrase("Aluno " + nomeAluno + " adicionado ao curso.");
+                    break;
+                case 2:
+                    String numMecanograficoRemover = consola.lerString("Número mecanográfico do aluno a remover:");
+                    Aluno alunoRemover = null;
+                    for (Aluno aluno : cursoAssociado.getAlunos()) {
+                        if (aluno.getNumeroMecanografico().equals(numMecanograficoRemover)) {
+                            alunoRemover = aluno;
+                            break;
+                        }
+                    }
+                    if (alunoRemover != null) {
+                        cursoAssociado.removerAluno(numMecanograficoRemover);
+                        ficheiro.guarda_dados(universidade);
+                        consola.escreverFrase("Aluno removido do curso.");
+                    } else {
+                        consola.escreverErro("Aluno não encontrado no curso.");
+                    }
+                    break;
+                case 3:
+                    // Lógica para consultar assiduidade do aluno
+                    break;
+                case 0:
+                    consola.escreverFrase("Saindo do Menu Regente Unidade Curricular.");
                     break;
                 default:
                     consola.escreverErro("Opção inválida. Tente novamente.");
