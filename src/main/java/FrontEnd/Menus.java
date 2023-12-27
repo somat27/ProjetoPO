@@ -115,7 +115,6 @@ public class Menus {
         }
     }
 
-    // ... (o código anterior permanece o mesmo)
     public void MenuAdministrador() throws InterruptedException {
         consola.escreverFrase("Menu Administrador\n");
 
@@ -352,6 +351,39 @@ public class Menus {
                 consola.escreverFrase("\t" + uc.getDesignacao());
             }
         }
+    }
+    
+    private String GerarNumeroMecanografico(int TIPO) {
+        String UltimaNumeroMecanografico = "";
+        String proximoNumeroMecanografico = "";
+        String maiorNumeroMecanografico = "";
+        if (TIPO == 1){
+            List<Professor> professores = universidade.getProfessores();
+            if (!professores.isEmpty()) {
+                Professor ultimoProfessor = professores.get(professores.size() - 1);
+                UltimaNumeroMecanografico = ultimoProfessor.getNumeroMecanografico();
+                String parteNumerica = UltimaNumeroMecanografico.substring(1);
+                int numeroInteiro = Integer.parseInt(parteNumerica);
+                numeroInteiro++;
+                proximoNumeroMecanografico = UltimaNumeroMecanografico.substring(0, 1) + String.format("%06d", numeroInteiro);
+            }
+        } else if (TIPO == 2) {
+            List<Curso> listaCursos = universidade.getCursos();
+            for (Curso curso : listaCursos) {
+                List<Aluno> listaAlunos = curso.getAlunos();
+                for (Aluno aluno : listaAlunos) {
+                    String numeroMecanografico = aluno.getNumeroMecanografico();
+                    if (numeroMecanografico.compareTo(maiorNumeroMecanografico) > 0) {
+                        maiorNumeroMecanografico = numeroMecanografico;
+                    }
+                }
+            }
+            String parteNumerica = maiorNumeroMecanografico.substring(1);
+            int numeroInteiro = Integer.parseInt(parteNumerica);
+            numeroInteiro++;
+            proximoNumeroMecanografico = maiorNumeroMecanografico.substring(0, 1) + String.format("%06d", numeroInteiro);
+        }
+        return proximoNumeroMecanografico;
     }
 
     private void menuListagem() {
@@ -708,8 +740,7 @@ public class Menus {
         } while (opcao != 0);
     }
 
-    public void MenuRegenteUnidadeCurricular(Professor professor)
-            throws InterruptedException {
+    public void MenuRegenteUnidadeCurricular(Professor professor) throws InterruptedException {
         Curso cursoAssociado = null;
         UnidadeCurricular UnidadeCurricularAssociada = null;
         List<Curso> cursos = universidade.getCursos();
@@ -740,10 +771,8 @@ public class Menus {
             switch (opcao) {
                 case 1:
                     String nomeAluno = consola.lerString("Nome do aluno:");
-                    String numeroAluno = consola.lerString(
-                            "Número mecanográfico do aluno:"
-                    );
-                    Aluno novoAluno = new Aluno(nomeAluno, numeroAluno);
+                    String numeroMecanografico = GerarNumeroMecanografico(2);
+                    Aluno novoAluno = new Aluno(nomeAluno, numeroMecanografico);
                     cursoAssociado.adicionarAluno(novoAluno);
                     ficheiro.guarda_dados(universidade);
                     consola.escreverFrase("Aluno " + nomeAluno + " adicionado ao curso.");
