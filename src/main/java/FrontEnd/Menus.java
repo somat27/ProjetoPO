@@ -164,24 +164,17 @@ public class Menus {
             switch (opcao) {
                 case 1:
                     String nome = consola.lerString("Nome do Professor: ");
-                    numeroMecanografico = consola.lerString("Número Mecanográfico: ");
-                    String dataInicioFuncoes = consola.lerString(
-                            "Data Início funções (dd/MM/yyyy): "
-                    );
+                    numeroMecanografico = GerarNumeroMecanografico(1);
+                    String dataInicioFuncoes = consola.lerString("Data Início funções (dd/MM/yyyy): ");
 
-                    Professor novoProfessor = new Professor(
-                            nome,
-                            numeroMecanografico,
-                            dataInicioFuncoes
-                    );
+                    Professor novoProfessor = new Professor(nome, numeroMecanografico, dataInicioFuncoes);
                     universidade.adicionarProfessor(novoProfessor);
                     ficheiro.guarda_dados(universidade);
 
                     consola.escreverFrase("Professor adicionado com sucesso!");
                     break;
                 case 2:
-                    numeroMecanografico
-                            = consola.lerString("Número Mecanográfico do Professor a Remover: ");
+                    numeroMecanografico = consola.lerString("Número Mecanográfico do Professor a Remover: ");
                     if (universidade.removerProfessor(numeroMecanografico)) {
                         consola.escreverFrase("Professor removido com sucesso!");
                         ficheiro.guarda_dados(universidade);
@@ -213,19 +206,13 @@ public class Menus {
                                     ficheiro.guarda_dados(universidade);
                                     break;
                                 case 2:
-                                    String novaDataContrato = consola.lerString(
-                                            "Nova Data de Contrato (dd/MM/yyyy): "
-                                    );
+                                    String novaDataContrato = consola.lerString("Nova Data de Contrato (dd/MM/yyyy): ");
                                     professor.setDataInicioFuncoes(novaDataContrato);
-                                    consola.escreverFrase(
-                                            "Data de Contrato do Professor alterada com sucesso!"
-                                    );
+                                    consola.escreverFrase("Data de Contrato do Professor alterada com sucesso!");
                                     ficheiro.guarda_dados(universidade);
                                     break;
                                 case 0:
-                                    consola.escreverFrase(
-                                            "A voltar ao Menu de Gestão de Professores."
-                                    );
+                                    consola.escreverFrase("A voltar ao Menu de Gestão de Professores.");
                                     break;
                                 default:
                                     consola.escreverErro("Opção inválida. Tente novamente.");
@@ -264,12 +251,8 @@ public class Menus {
                 case 1:
                     nomeCurso = consola.lerString("Nome do Curso: ");
                     listarProfessores();
-                    String numeroMecanograficoDiretor = consola.lerString(
-                            "Número Mecanográfico do Diretor do Curso: "
-                    );
-                    Professor diretorCurso = universidade.encontrarProfessor(
-                            numeroMecanograficoDiretor
-                    );
+                    String numeroMecanograficoDiretor = consola.lerString("Número Mecanográfico do Diretor do Curso: ");
+                    Professor diretorCurso = universidade.encontrarProfessor(numeroMecanograficoDiretor);
                     if (diretorCurso != null) {
                         Curso novoCurso = new Curso(nomeCurso, diretorCurso);
                         universidade.adicionarCurso(novoCurso);
@@ -299,20 +282,16 @@ public class Menus {
                     do {
                         listarCursos();
                         nomeCurso = consola.lerString("Nome do Curso: ");
-
-                        // Verificar se o curso existe
                         curso = universidade.encontrarCursoPorDesignacao(nomeCurso);
 
                         if (curso != null) {
-                            // Curso encontrado, permitir a alteração
                             String novaDesignacao = consola.lerString("Nova Designação: ");
                             curso.setDesignacao(novaDesignacao);
 
                             consola.escreverFrase("Informações do Curso alteradas com sucesso!");
                             ficheiro.guarda_dados(universidade);
-                            cursoEncontrado = true; // Saia do loop, pois o curso foi encontrado
+                            cursoEncontrado = true;
                         } else {
-                            // Curso não encontrado, notificar o usuário e continuar no loop
                             consola.escreverErro("Curso não encontrado. Certifique-se de que digitou corretamente o nome do curso.");
                         }
                     } while (!cursoEncontrado);
@@ -337,8 +316,7 @@ public class Menus {
         List<Professor> professores = universidade.getProfessores();
         consola.escreverFrase("Lista de Professores:");
         for (Professor professor : professores) {
-            consola.escreverFrase("\tNúmero Mecanográfico: " + professor.getNumeroMecanografico()
-                    + "\tNome: " + professor.getNome());
+            consola.escreverFrase("\tNúmero Mecanográfico: " + professor.getNumeroMecanografico() + "\tNome: " + professor.getNome());
         }
     }
 
@@ -411,9 +389,7 @@ public class Menus {
 
                     if (curso != null) {
                         List<UnidadeCurricular> ucs = curso.getUCs();
-                        consola.escreverFrase(
-                                "\nLista de UCs do Curso " + curso.getDesignacao() + ":"
-                        );
+                        consola.escreverFrase("\nLista de UCs do Curso " + curso.getDesignacao() + ":");
                         for (UnidadeCurricular uc : ucs) {
                             consola.escreverFrase(uc.getDesignacao());
                         }
@@ -441,17 +417,6 @@ public class Menus {
                     consola.escreverErro("Opção inválida. Tente novamente.");
             }
         } while (opcao != 0);
-    }
-
-    private void listarAlunos() {
-        List<Curso> cursos = universidade.getCursos();
-        consola.escreverFrase("Lista de Alunos:");
-        for (Curso curso : cursos) {
-            List<Aluno> alunos = curso.getAlunos();
-            for (Aluno aluno : alunos) {
-                consola.escreverFrase("\t" + aluno.getNome());
-            }
-        }
     }
 
     private void menuAtribuir() {
@@ -545,21 +510,14 @@ public class Menus {
 
             switch (opcao) {
                 case 1:
-                    consola.escreverFrase(
-                            "Escolha a Unidade Curricular para criar um Sumário:"
-                    );
+                    consola.escreverFrase("Escolha a Unidade Curricular para criar um Sumário:");
                     for (int i = 0; i < servicoDocente.size(); i++) {
-                        consola.escreverFrase(
-                                (i + 1) + ". " + servicoDocente.get(i).getDesignacao()
-                        );
+                        consola.escreverFrase((i + 1) + ". " + servicoDocente.get(i).getDesignacao());
                     }
 
                     int escolha;
                     do {
-                        escolha
-                                = consola.lerInteiro(
-                                        "Escolha o número correspondente à Unidade Curricular:"
-                                );
+                        escolha = consola.lerInteiro("Escolha o número correspondente à Unidade Curricular:");
                     } while (escolha < 1 || escolha > servicoDocente.size());
 
                     UnidadeCurricular UnidadeEscolhida = servicoDocente.get(escolha - 1);
@@ -570,13 +528,8 @@ public class Menus {
                     titulo = consola.lerString("\tTítulo da Aula:");
 
                     String tipoAula = "";
-                    while (!tipoAula.equals("teorica")
-                            && !tipoAula.equals("pratica")
-                            && !tipoAula.equals("laboratorial")) {
-                        tipoAula
-                                = consola.lerStringLowerCase(
-                                        "\tTipo de Aula (TEORICA, PRATICA, LABORATORIAL): "
-                                );
+                    while (!tipoAula.equals("teorica") && !tipoAula.equals("pratica") && !tipoAula.equals("laboratorial")) {
+                        tipoAula = consola.lerStringLowerCase("\tTipo de Aula (TEORICA, PRATICA, LABORATORIAL): ");
                     }
 
                     String conteudo;
@@ -595,27 +548,16 @@ public class Menus {
                         }
                     }
                     for (Aluno alunos : cursoAssociado.getAlunos()) {
-                        System.out.println(
-                                alunos.getNome() + "->" + alunos.getNumeroMecanografico()
-                        );
+                        System.out.println(alunos.getNome() + "->" + alunos.getNumeroMecanografico());
                         String presenca = "";
                         while (!presenca.equals("sim") && !presenca.equals("nao")) {
-                            presenca
-                                    = consola.lerStringLowerCase(
-                                            "\tEste aluno esta presente? (SIM, NAO): "
-                                    );
+                            presenca = consola.lerStringLowerCase("\tEste aluno esta presente? (SIM, NAO): ");
                         }
                         if (presenca.equals("sim")) {
                             assiduidadeAlunos.add(alunos);
                         }
                     }
-                    SumarioAula novoSumario = new SumarioAula(
-                            titulo,
-                            tipoAula,
-                            conteudo,
-                            consola.getHoraAtual(),
-                            assiduidadeAlunos
-                    );
+                    SumarioAula novoSumario = new SumarioAula(titulo,tipoAula,conteudo,consola.getHoraAtual(),assiduidadeAlunos);
 
                     professor.criarSumario(UnidadeEscolhida, novoSumario);
 
@@ -640,13 +582,8 @@ public class Menus {
                     break;
                 case 3:
                     String tipoSumario = "";
-                    while (!tipoSumario.equals("teorica")
-                            && !tipoSumario.equals("pratica")
-                            && !tipoSumario.equals("laboratorial")) {
-                        tipoSumario
-                                = consola.lerStringLowerCase(
-                                        "\tTipo de Aula (TEORICA, PRATICA, LABORATORIAL): "
-                                );
+                    while (!tipoSumario.equals("teorica") && !tipoSumario.equals("pratica") && !tipoSumario.equals("laboratorial")) {
+                        tipoSumario = consola.lerStringLowerCase("\tTipo de Aula (TEORICA, PRATICA, LABORATORIAL): ");
                     }
                     for (UnidadeCurricular uc : servicoDocente) {
                         sumarios = uc.consultarSumariosPorTipoAula(tipoSumario);
@@ -674,13 +611,11 @@ public class Menus {
         } while (opcao != 0);
     }
 
-    public void MenuDiretorCurso(Professor professor)
-            throws InterruptedException {
+    public void MenuDiretorCurso(Professor professor) throws InterruptedException {
         Curso cursoAssociado = null;
         List<Curso> cursos = universidade.getCursos();
         for (Curso curso : cursos) {
-            if (curso.getDiretorCurso() != null
-                    && curso.getDiretorCurso().equals(professor)) {
+            if (curso.getDiretorCurso() != null && curso.getDiretorCurso().equals(professor)) {
                 cursoAssociado = curso;
                 break;
             }
@@ -694,42 +629,23 @@ public class Menus {
         do {
             consola.escreverFrase("\nMenu Diretor de Curso:");
             consola.escreverFrase("1. Alterar designação do Curso.");
-            consola.escreverFrase(
-                    "2. Listar número de professores ou alunos por curso."
-            );
+            consola.escreverFrase("2. Listar número de professores ou alunos por curso.");
             consola.escreverFrase("0. Voltar");
             opcao = consola.lerInteiro("Escolha uma opção: ");
 
             switch (opcao) {
                 case 1:
                     String novaDesignacao = " ";
-                    novaDesignacao
-                            = consola.lerString(
-                                    "Escolha a nova designação para o curso "
-                                    + cursoAssociado.getDesignacao()
-                                    + ":"
-                            );
+                    novaDesignacao = consola.lerString("Escolha a nova designação para o curso " + cursoAssociado.getDesignacao() + ":");
                     cursoAssociado.setDesignacao(novaDesignacao);
-                    System.out.println(
-                            "Designação do curso alterada para: " + novaDesignacao
-                    );
+                    System.out.println("Designação do curso alterada para: " + novaDesignacao);
                     ficheiro.guarda_dados(universidade);
                     break;
                 case 2:
                     int n_alunos = cursoAssociado.getAlunos().size();
-                    consola.escreverFrase(
-                            "Numero de alunos do curso "
-                            + cursoAssociado.getDesignacao()
-                            + ": "
-                            + n_alunos
-                    );
+                    consola.escreverFrase("Numero de alunos do curso " + cursoAssociado.getDesignacao() + ": " + n_alunos);
                     int n_profs = cursoAssociado.getNumeroProfessores();
-                    consola.escreverFrase(
-                            "Numero de professores do curso "
-                            + cursoAssociado.getDesignacao()
-                            + ": "
-                            + n_profs
-                    );
+                    consola.escreverFrase("Numero de professores do curso " + cursoAssociado.getDesignacao() + ": " + n_profs);
                     break;
                 case 0:
                     consola.escreverFrase("Saindo do Menu Diretor de Curso.");
@@ -778,9 +694,7 @@ public class Menus {
                     consola.escreverFrase("Aluno " + nomeAluno + " adicionado ao curso.");
                     break;
                 case 2:
-                    String numMecanograficoRemover = consola.lerString(
-                            "Número mecanográfico do aluno a remover:"
-                    );
+                    String numMecanograficoRemover = consola.lerString("Número mecanográfico do aluno a remover:");
                     Aluno alunoRemover = null;
                     for (Aluno aluno : cursoAssociado.getAlunos()) {
                         if (aluno.getNumeroMecanografico().equals(numMecanograficoRemover)) {
