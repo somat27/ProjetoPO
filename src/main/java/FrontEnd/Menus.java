@@ -171,7 +171,7 @@ public class Menus {
                     universidade.adicionarProfessor(novoProfessor);
                     ficheiro.guarda_dados(universidade);
 
-                    consola.escreverFrase("Professor adicionado com sucesso!");
+                    consola.escreverFrase("Professor adicionado com sucesso com o numero: " + numeroMecanografico + "!");
                     break;
                 case 2:
                     numeroMecanografico = consola.lerString("Número Mecanográfico do Professor a Remover: ");
@@ -335,7 +335,7 @@ public class Menus {
         String UltimaNumeroMecanografico = "";
         String proximoNumeroMecanografico = "";
         String maiorNumeroMecanografico = "";
-        if (TIPO == 1){
+        if (TIPO == 1){ // professores
             List<Professor> professores = universidade.getProfessores();
             if (!professores.isEmpty()) {
                 Professor ultimoProfessor = professores.get(professores.size() - 1);
@@ -344,22 +344,31 @@ public class Menus {
                 int numeroInteiro = Integer.parseInt(parteNumerica);
                 numeroInteiro++;
                 proximoNumeroMecanografico = UltimaNumeroMecanografico.substring(0, 1) + String.format("%06d", numeroInteiro);
+            }else{
+                proximoNumeroMecanografico = "D000001";
             }
-        } else if (TIPO == 2) {
+        } else if (TIPO == 2) { // alunos
             List<Curso> listaCursos = universidade.getCursos();
             for (Curso curso : listaCursos) {
                 List<Aluno> listaAlunos = curso.getAlunos();
-                for (Aluno aluno : listaAlunos) {
-                    String numeroMecanografico = aluno.getNumeroMecanografico();
-                    if (numeroMecanografico.compareTo(maiorNumeroMecanografico) > 0) {
-                        maiorNumeroMecanografico = numeroMecanografico;
+                if (!listaAlunos.isEmpty()) {
+                    for (Aluno aluno : listaAlunos) {
+                        String numeroMecanografico = aluno.getNumeroMecanografico();
+                        if (numeroMecanografico.compareTo(maiorNumeroMecanografico) > 0) {
+                            maiorNumeroMecanografico = numeroMecanografico;
+                        }
                     }
+                } else {
+                    proximoNumeroMecanografico = "A000001";
+                    break;
                 }
             }
-            String parteNumerica = maiorNumeroMecanografico.substring(1);
-            int numeroInteiro = Integer.parseInt(parteNumerica);
-            numeroInteiro++;
-            proximoNumeroMecanografico = maiorNumeroMecanografico.substring(0, 1) + String.format("%06d", numeroInteiro);
+            if (!proximoNumeroMecanografico.equals("A000001")) {
+                String parteNumerica = maiorNumeroMecanografico.substring(1);
+                int numeroInteiro = Integer.parseInt(parteNumerica);
+                numeroInteiro++;
+                proximoNumeroMecanografico = maiorNumeroMecanografico.substring(0, 1) + String.format("%06d", numeroInteiro);
+            }
         }
         return proximoNumeroMecanografico;
     }
@@ -691,7 +700,7 @@ public class Menus {
                     Aluno novoAluno = new Aluno(nomeAluno, numeroMecanografico);
                     cursoAssociado.adicionarAluno(novoAluno);
                     ficheiro.guarda_dados(universidade);
-                    consola.escreverFrase("Aluno " + nomeAluno + " adicionado ao curso.");
+                    consola.escreverFrase("Aluno " + nomeAluno + " adicionado ao curso com o numero: " + numeroMecanografico + ".");
                     break;
                 case 2:
                     String numMecanograficoRemover = consola.lerString("Número mecanográfico do aluno a remover:");
