@@ -7,13 +7,18 @@ package BackEnd;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author tomas
- */
+ */ 
 public class Universidade implements Serializable {
+
     private List<Professor> professores = new ArrayList<>();
     private List<Curso> cursos = new ArrayList<>();
+
+    public Universidade() {
+    }
 
     public void adicionarProfessor(Professor professor) {
         professores.add(professor);
@@ -54,11 +59,11 @@ public class Universidade implements Serializable {
         }
         return alunos;
     }
-     
+
     public boolean removerProfessor(String numeroMecanografico) {
         return professores.removeIf(professor -> professor.getNumeroMecanografico().equals(numeroMecanografico));
     }
-    
+
     public boolean alterarInformacoesProfessor(String numeroMecanografico, String novoNome) {
         for (Professor professor : professores) {
             if (professor.getNumeroMecanografico().equals(numeroMecanografico)) {
@@ -68,15 +73,15 @@ public class Universidade implements Serializable {
         }
         return false;
     }
-    
+
     public void removerAluno(String numeroMecanografico) {
         cursos.forEach(curso -> curso.removerAluno(numeroMecanografico));
     }
-    
+
     public void removerUC(String designacao) {
         cursos.forEach(curso -> curso.removerUC(designacao));
     }
-    
+
     public Professor encontrarProfessor(String numeroMecanografico) {
         for (Professor professor : professores) {
             if (professor.getNumeroMecanografico().equals(numeroMecanografico)) {
@@ -85,7 +90,7 @@ public class Universidade implements Serializable {
         }
         return null;
     }
-    
+
     public boolean verificarProfessor(String numeroMecanografico) {
         for (Professor professor : professores) {
             if (professor.getNumeroMecanografico().equals(numeroMecanografico)) {
@@ -95,4 +100,34 @@ public class Universidade implements Serializable {
         return false;
     }
 
+    public Curso encontrarCurso(String nomeCurso) {
+        for (Curso curso : cursos) {
+            if (curso.getDesignacao().equals(nomeCurso)) {
+                return curso;
+            }
+        }
+        return null;
+    }
+
+    public void removerCurso(String designacaoCurso) {
+        Curso cursoRemover = null;
+        for (Curso curso : cursos) {
+            if (curso.getDesignacao().equals(designacaoCurso)) {
+                cursoRemover = curso;
+                break;
+            }
+        }
+
+        if (cursoRemover != null) {
+            cursos.remove(cursoRemover);
+        }
+    }
+    public Curso encontrarCursoPorDesignacao(String designacaoCurso) {
+        for (Curso curso : cursos) {
+            if (curso.getDesignacao().equals(designacaoCurso)) {
+                return curso;
+            }
+        }
+        return null;
+    }
 }
