@@ -216,8 +216,7 @@ public class Menus {
                                     break;
                                 default:
                                     consola.escreverErro("Opção inválida. Tente novamente.");
-                            }
-                            ficheiro.guarda_dados(universidade);
+                            }                           
                             professorEncontrado = true; // Encerra o loop se as operações foram realizadas
                         } else {
                             consola.escreverErro("Professor não encontrado. Tente novamente.");
