@@ -11,7 +11,7 @@ import java.util.List;
 /**
  *
  * @author tomas
- */ 
+ */
 public class Universidade implements Serializable {
 
     private List<Professor> professores = new ArrayList<>();
@@ -122,6 +122,7 @@ public class Universidade implements Serializable {
             cursos.remove(cursoRemover);
         }
     }
+
     public Curso encontrarCursoPorDesignacao(String designacaoCurso) {
         for (Curso curso : cursos) {
             if (curso.getDesignacao().equals(designacaoCurso)) {
@@ -130,4 +131,17 @@ public class Universidade implements Serializable {
         }
         return null;
     }
+
+    public UnidadeCurricular encontrarUCporDesignacao(String designacao) {
+        for (Curso curso : cursos) {
+            List<UnidadeCurricular> ucs = curso.getUCs();
+            for (UnidadeCurricular uc : ucs) {
+                if (uc.getDesignacao().equalsIgnoreCase(designacao)) {
+                    return uc;
+                }
+            }
+        }
+        return null;
+    }
+
 }
