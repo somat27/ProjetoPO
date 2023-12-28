@@ -138,18 +138,20 @@ public class Menus {
                     break;
                 case 3:
                     menuGestaoUCs();
+                    break;
                 case 4:
                     menuListagem();
                     break;
                 case 5:
                     menuAtribuir();
+                    break;
                 case 6:
                     consola.escreverFrase("Sair do Menu Administrador.");
                     break;
                 default:
                     consola.escreverErro("Opção inválida. Tente novamente.");
             }
-        } while (opcao != 5);
+        } while (opcao != 6);
     }
 
     private void menuGestaoProfessores() throws InterruptedException {
@@ -358,6 +360,8 @@ public class Menus {
                                 if (cursoAssociar != null) {
                                     // Criar UC
                                     UnidadeCurricular novaUC = new UnidadeCurricular(nomeUC, regente);
+                                    novaUC.adicionarEquipaDocente(regente);
+                                    regente.adicionarAoServicoDocente(novaUC);
 
                                     // Adicionar UC ao curso
                                     universidade.adicionarUC(novaUC, cursoAssociar);
