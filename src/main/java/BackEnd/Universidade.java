@@ -37,7 +37,11 @@ public class Universidade implements Serializable {
     }
 
     public void adicionarUC(UnidadeCurricular uc, Curso curso) {
-        curso.adicionarUC(uc);
+        if (curso != null) {
+            curso.adicionarUC(uc);
+        } else {
+            System.out.println("Erro: Curso nulo. Não foi possível adicionar UC.");
+        }
     }
 
     public void adicionarAluno(Aluno aluno, Curso curso) {

@@ -122,9 +122,10 @@ public class Menus {
         do {
             consola.escreverFrase("1. Gestão de Professores");
             consola.escreverFrase("2. Gestão de Cursos");
-            consola.escreverFrase("3. Listar cursos/UCs/alunos/professores");
-            consola.escreverFrase("4. Atribuir direção de curso/regência de UC");
-            consola.escreverFrase("5. Sair");
+            consola.escreverFrase("3. Gestão de Unidades Curriculares");
+            consola.escreverFrase("4. Listar cursos/UCs/alunos/professores");
+            consola.escreverFrase("5. Atribuir direção de curso/regência de UC");
+            consola.escreverFrase("6. Sair");
 
             opcao = consola.lerInteiro("Escolha uma opção: ");
 
@@ -136,11 +137,13 @@ public class Menus {
                     menuGestaoCursos();
                     break;
                 case 3:
+                    menuGestaoUCs();
+                case 4:
                     menuListagem();
                     break;
-                case 4:
-                    menuAtribuir();
                 case 5:
+                    menuAtribuir();
+                case 6:
                     consola.escreverFrase("Sair do Menu Administrador.");
                     break;
                 default:
@@ -174,6 +177,7 @@ public class Menus {
                     consola.escreverFrase("Professor adicionado com sucesso com o numero: " + numeroMecanografico + "!");
                     break;
                 case 2:
+                    listarProfessores();
                     numeroMecanografico = consola.lerString("Número Mecanográfico do Professor a Remover: ");
                     if (universidade.removerProfessor(numeroMecanografico)) {
                         consola.escreverFrase("Professor removido com sucesso!");
@@ -216,7 +220,7 @@ public class Menus {
                                     break;
                                 default:
                                     consola.escreverErro("Opção inválida. Tente novamente.");
-                            }                           
+                            }
                             professorEncontrado = true; // Encerra o loop se as operações foram realizadas
                         } else {
                             consola.escreverErro("Professor não encontrado. Tente novamente.");
@@ -248,12 +252,23 @@ public class Menus {
 
             switch (opcao) {
                 case 1:
-                    nomeCurso = consola.lerString("Nome do Curso: ");
+                    do {
+                        nomeCurso = consola.lerString("Nome do Curso: ");
+
+                        // Verificar se o curso com o mesmo nome já existe
+                        if (universidade.encontrarCurso(nomeCurso) != null) {
+                            consola.escreverErro("Já existe um curso com o mesmo nome. Por favor, escolha outro nome.");
+                        }
+                    } while (universidade.encontrarCurso(nomeCurso) != null);
+
                     listarProfessores();
                     String numeroMecanograficoDiretor = consola.lerString("Número Mecanográfico do Diretor do Curso: ");
                     Professor diretorCurso = universidade.encontrarProfessor(numeroMecanograficoDiretor);
+
                     if (diretorCurso != null) {
                         Curso novoCurso = new Curso(nomeCurso, diretorCurso);
+
+                        // Adicionar o novo curso à universidade
                         universidade.adicionarCurso(novoCurso);
 
                         consola.escreverFrase("Curso adicionado com sucesso!");
@@ -262,6 +277,7 @@ public class Menus {
                         consola.escreverErro("Diretor de Curso não encontrado.");
                     }
                     break;
+
                 case 2:
                     nomeCurso = consola.lerString("Nome do Curso a Remover: ");
                     curso = universidade.encontrarCursoPorDesignacao(nomeCurso);
@@ -303,6 +319,141 @@ public class Menus {
         } while (opcao != 0);
     }
 
+    private void menuGestaoUCs() throws InterruptedException {
+        int opcao = 0;
+        UnidadeCurricular ucs;
+        String designacaoUC;
+        do {
+            consola.escreverFrase("\nMenu de Gestão de Unidades Curriculares (UCs)");
+            consola.escreverFrase("1. Criar UC");
+            consola.escreverFrase("2. Remover UC");
+            consola.escreverFrase("3. Editar UC");
+            consola.escreverFrase("0. Voltar");
+
+            opcao = consola.lerInteiro("Escolha uma opção: ");
+
+            switch (opcao) {
+                case 1:
+                    consola.escreverFrase("\nCriar Nova UC");
+
+                    String nomeUC;
+                    boolean nomeRepetido;
+                    do {
+                        nomeUC = consola.lerString("Digite o nome da UC: ");
+
+                        nomeRepetido = universidade.encontrarUCporDesignacao(nomeUC) != null;
+
+                        if (nomeRepetido) {
+                            consola.escreverFrase("Já existe uma UC com o mesmo nome. Por favor, escolha outro nome.");
+                        } else {
+                            listarProfessores();
+                            String numeroMecRegente = consola.lerString("Digite o número mecanográfico do regente da UC: ");
+                            Professor regente = universidade.encontrarProfessor(numeroMecRegente);
+
+                            if (regente != null) {
+                                listarCursos();
+                                String designacaoCurso = consola.lerString("Digite a designação do curso para associar a UC: ");
+                                Curso cursoAssociar = universidade.encontrarCursoPorDesignacao(designacaoCurso);
+
+                                if (cursoAssociar != null) {
+                                    // Criar UC
+                                    UnidadeCurricular novaUC = new UnidadeCurricular(nomeUC, regente);
+
+                                    // Adicionar UC ao curso
+                                    universidade.adicionarUC(novaUC, cursoAssociar);
+
+                                    consola.escreverFrase("UC criada com sucesso!");
+                                    ficheiro.guarda_dados(universidade);
+                                } else {
+                                    consola.escreverFrase("Curso não encontrado. Não foi possível criar UC.");
+                                }
+                            } else {
+                                consola.escreverFrase("Regente não encontrado. Não foi possível criar UC.");
+                            }
+                        }
+                    } while (nomeRepetido); // Repete se já existe uma UC com o mesmo nome
+                    break;
+
+                case 2:
+                    consola.escreverFrase("\nRemover UC");
+
+                    listarUCs();
+
+                    designacaoUC = consola.lerString("Digite o nome da UC para remover: ");
+
+                    UnidadeCurricular ucRemover = universidade.encontrarUCporDesignacao(designacaoUC);
+
+                    if (ucRemover != null) {
+
+                        universidade.removerUC(ucRemover.getDesignacao());
+
+                        consola.escreverFrase("UC removida com sucesso!");
+                        ficheiro.guarda_dados(universidade);
+                    } else {
+                        consola.escreverFrase("UC não encontrada.");
+                    }
+                    break;
+                case 3:
+                    consola.escreverFrase("\nEditar UC");
+
+                    listarUCs();
+
+                    if (!universidade.getUCs().isEmpty()) {
+
+                        designacaoUC = consola.lerString("Digite a designação da UC para editar: ");
+
+                        UnidadeCurricular ucEditar = universidade.encontrarUCporDesignacao(designacaoUC);
+
+                        if (ucEditar != null) {
+
+                            exibirInformacoesUC(ucEditar);
+
+                            int opcaoEdicao = exibirMenuEdicaoUC();
+
+                            switch (opcaoEdicao) {
+                                case 1:
+
+                                    String novoNomeUC = consola.lerString("Digite o novo nome para a UC: ");
+                                    ucEditar.setDesignacao(novoNomeUC);
+                                    consola.escreverFrase("Nome da UC editado com sucesso!");
+                                    ficheiro.guarda_dados(universidade);
+                                    break;
+
+                                case 2:
+
+                                    listarCursosAssociados(ucEditar);
+                                    String designacaoCurso = consola.lerString("Digite a designação do curso para desassociar a UC: ");
+                                    Curso cursoDesassociar = universidade.encontrarCursoPorDesignacao(designacaoCurso);
+
+                                    if (cursoDesassociar != null) {
+                                        cursoDesassociar.removerUC(ucEditar.getDesignacao());
+                                        consola.escreverFrase("UC desassociada do curso com sucesso!");
+                                        ficheiro.guarda_dados(universidade);
+                                    } else {
+                                        consola.escreverFrase("Curso não encontrado.");
+                                    }
+                                    break;
+
+                                default:
+                                    consola.escreverFrase("Opção inválida.");
+                            }
+                        } else {
+                            consola.escreverFrase("UC não encontrada.");
+                        }
+                    } else {
+                        consola.escreverFrase("Não há UCs disponíveis.");
+                    }
+                    break;
+
+                case 0:
+                    consola.escreverFrase("A sair do Menu de UCs.");
+                    break;
+                default:
+                    consola.escreverErro("Opção inválida. Tente novamente.");
+            }
+        } while (opcao != 0);
+    }
+
     private void listarCursos() {
         List<Curso> cursos = universidade.getCursos();
         consola.escreverFrase("Lista de Cursos:");
@@ -329,12 +480,61 @@ public class Menus {
             }
         }
     }
-    
+
+    private void listarCursosAssociados(UnidadeCurricular uc) {
+        List<Curso> cursosAssociados = new ArrayList<>();
+
+        // Encontrar cursos associados à UC
+        for (Curso curso : universidade.getCursos()) {
+            if (curso.getUCs().contains(uc)) {
+                cursosAssociados.add(curso);
+            }
+        }
+
+        // Listar cursos associados
+        if (!cursosAssociados.isEmpty()) {
+            consola.escreverFrase("\nCursos associados à UC " + uc.getDesignacao() + ":");
+            for (int i = 0; i < cursosAssociados.size(); i++) {
+                consola.escreverFrase((i + 1) + "- " + cursosAssociados.get(i).getDesignacao());
+            }
+        } else {
+            consola.escreverFrase("A UC não está associada a nenhum curso.");
+        }
+    }
+
+    public static void exibirInformacoesUC(UnidadeCurricular uc) {
+        System.out.println("Informações da UC:");
+        System.out.println("Designação: " + uc.getDesignacao());
+        System.out.println("Regente: " + uc.getRegente().getNome());
+
+        List<Professor> equipeDocente = uc.getEquipaDocente();
+        System.out.println("Equipe Docente:");
+        for (Professor professor : equipeDocente) {
+            System.out.println("- " + professor.getNome());
+        }
+
+        List<SumarioAula> sumarios = uc.getSumarios();
+        System.out.println("Sumários de Aula:");
+        for (SumarioAula sumario : sumarios) {
+            System.out.println("- Tipo: " + sumario.getTipo() + ", Data: " + sumario.getData());
+        }
+    }
+
+    public int exibirMenuEdicaoUC() {
+        consola.escreverFrase("\nMenu de Edição de Unidades Curriculares (UCs)");
+        consola.escreverFrase("1. Editar nome da UC");
+        consola.escreverFrase("2. Desassociar UC de um curso");
+        // Adicione mais opções de edição conforme necessário
+        consola.escreverFrase("0. Voltar");
+
+        return consola.lerInteiro("Escolha uma opção: ");
+    }
+
     private String GerarNumeroMecanografico(int TIPO) {
         String UltimaNumeroMecanografico = "";
         String proximoNumeroMecanografico = "";
         String maiorNumeroMecanografico = "";
-        if (TIPO == 1){ // professores
+        if (TIPO == 1) { // professores
             List<Professor> professores = universidade.getProfessores();
             if (!professores.isEmpty()) {
                 Professor ultimoProfessor = professores.get(professores.size() - 1);
@@ -343,7 +543,7 @@ public class Menus {
                 int numeroInteiro = Integer.parseInt(parteNumerica);
                 numeroInteiro++;
                 proximoNumeroMecanografico = UltimaNumeroMecanografico.substring(0, 1) + String.format("%06d", numeroInteiro);
-            }else{
+            } else {
                 proximoNumeroMecanografico = "D000001";
             }
         } else if (TIPO == 2) { // alunos
@@ -392,12 +592,12 @@ public class Menus {
                     break;
                 case 2:
                     listarCursos();
-                    nomeCurso = consola.lerString("Nome do Curso: ");
-                    curso = universidade.encontrarCurso(nomeCurso);
+                    String nomeCursoListarUCs = consola.lerString("Digite o nome do curso para listar as UCs: ");
+                    Curso cursoListarUCs = universidade.encontrarCurso(nomeCursoListarUCs);
 
-                    if (curso != null) {
-                        List<UnidadeCurricular> ucs = curso.getUCs();
-                        consola.escreverFrase("\nLista de UCs do Curso " + curso.getDesignacao() + ":");
+                    if (cursoListarUCs != null) {
+                        List<UnidadeCurricular> ucs = cursoListarUCs.getUCs();
+                        consola.escreverFrase("\nLista de UCs do Curso " + cursoListarUCs.getDesignacao() + ":");
                         for (UnidadeCurricular uc : ucs) {
                             consola.escreverFrase(uc.getDesignacao());
                         }
@@ -405,6 +605,7 @@ public class Menus {
                         consola.escreverErro("Curso não encontrado.");
                     }
                     break;
+
                 case 3:
                     cursos = universidade.getCursos();
                     consola.escreverFrase("Lista de Alunos:");
@@ -565,7 +766,7 @@ public class Menus {
                             assiduidadeAlunos.add(alunos);
                         }
                     }
-                    SumarioAula novoSumario = new SumarioAula(titulo,tipoAula,conteudo,consola.getHoraAtual(),assiduidadeAlunos);
+                    SumarioAula novoSumario = new SumarioAula(titulo, tipoAula, conteudo, consola.getHoraAtual(), assiduidadeAlunos);
 
                     professor.criarSumario(UnidadeEscolhida, novoSumario);
 

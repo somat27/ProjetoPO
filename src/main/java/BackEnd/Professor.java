@@ -22,7 +22,6 @@ public class Professor extends Pessoa implements Serializable {
         this.dataInicioFuncoes = dataInicioFuncoes;
     }
 
-    // Adicione outros métodos e atributos conforme necessário
 
     public String getDataInicioFuncoes() {
         return dataInicioFuncoes;
