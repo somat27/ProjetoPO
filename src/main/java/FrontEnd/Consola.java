@@ -4,15 +4,27 @@
  */
 package FrontEnd;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+import BackEnd.Aluno;
+import BackEnd.Curso;
+import BackEnd.Professor;
+import BackEnd.SumarioAula;
+import BackEnd.UnidadeCurricular;
+import BackEnd.Universidade;
 /**
  *
  * @author tomas
  */
 public class Consola {
     private final Scanner Leitor = new Scanner(System.in);
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     
     public void erroOpcaoInvalida() {
         System.err.println("\nErro\nNumero invalido\nPor favor insira um numero dos indicados\nPressione enter para continuar...");
@@ -72,7 +84,7 @@ public class Consola {
     }
     
     public void PressEntertoContinue(){
-        System.out.println("Pressione Enter para continuar...");
+        System.out.println("\nPressione Enter para continuar...");
         Leitor.nextLine();
     }
     
@@ -80,5 +92,178 @@ public class Consola {
         LocalDateTime agora = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         return agora.format(formatter);
+    }
+
+    // METODOS PARA VERIFICAÇÃO DE HORAS
+
+    public LocalDate VerificarSeValida(String dataIntroduzida) {
+        try {
+            String[] parteDatas = dataIntroduzida.split("/");
+            int dia = Integer.parseInt(parteDatas[0]);
+            LocalDate data = LocalDate.parse(dataIntroduzida, formatter);
+            boolean bissexto = data.isLeapYear();
+            YearMonth d = YearMonth.of(data.getYear(), data.getMonth());
+            //Verifica se o ano e bissexto
+
+            if (bissexto == true) {
+                if (data.getMonthValue() == 2) {
+                    if (dia > 29) {
+                        return null;
+                    }
+                } else if (!d.isValidDay(dia)) {
+                    return null;
+                }
+            } else {
+                if (data.getMonthValue() == 2) {
+                    if (dia > 28) {
+                        return null;
+                    }
+                } else if (!d.isValidDay(dia)) {
+                    return null;
+                }
+            }
+            return data;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public boolean VerificarFormato(String data) {
+        try {
+            LocalDate.parse(data, formatter);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Formato errado (01/01/2023)");
+            return false;
+        }
+    }
+
+    // METODOS PARA VERIFICAÇÃO DE HORAS
+
+    // METODOS PARA O MENU ADMINISTRADOR
+
+    public void listarCursos(Universidade universidade) {
+        List<Curso> cursos = universidade.getCursos();
+        escreverFrase("Lista de Cursos:");
+        for (Curso curso : cursos) {
+            escreverFrase("\t" + curso.getDesignacao());
+        }
+    }
+
+    public void listarProfessores(Universidade universidade) {
+        List<Professor> professores = universidade.getProfessores();
+        escreverFrase("Lista de Professores:");
+        for (Professor professor : professores) {
+            escreverFrase("\tNúmero Mecanográfico: " + professor.getNumeroMecanografico() + "\tNome: " + professor.getNome());
+        }
+    }
+
+    public void listarUCs(Universidade universidade) {
+        List<Curso> cursos = universidade.getCursos();
+        escreverFrase("Lista de Unidades Curriculares (UCs):");
+        for (Curso curso : cursos) {
+            List<UnidadeCurricular> ucs = curso.getUCs();
+            for (UnidadeCurricular uc : ucs) {
+                escreverFrase("\t" + uc.getDesignacao());
+            }
+        }
+    }
+
+    public void listarAlunosUC(Curso curso) {
+        List<Aluno> listaAlunos = curso.getAlunos();
+        for (Aluno aluno : listaAlunos) {
+            escreverFrase("\tNúmero Mecanográfico: " + aluno.getNumeroMecanografico() + "\tNome: " + aluno.getNome());
+        }
+    }
+
+    public boolean verificarAlunoCurso(Curso curso, String numeroAlunoPresenca) {
+        List<Aluno> listaAlunos = curso.getAlunos();
+        for (Aluno aluno : listaAlunos) {
+            if (aluno.getNumeroMecanografico().equals(numeroAlunoPresenca)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void listarCursosAssociados(Universidade universidade, UnidadeCurricular uc) {
+        List<Curso> cursosAssociados = new ArrayList<>();
+
+        // Encontrar cursos associados à UC
+        for (Curso curso : universidade.getCursos()) {
+            if (curso.getUCs().contains(uc)) {
+                cursosAssociados.add(curso);
+            }
+        }
+
+        // Listar cursos associados
+        if (!cursosAssociados.isEmpty()) {
+            escreverFrase("\nCursos associados à UC " + uc.getDesignacao() + ":");
+            for (int i = 0; i < cursosAssociados.size(); i++) {
+                escreverFrase((i + 1) + "- " + cursosAssociados.get(i).getDesignacao());
+            }
+        } else {
+            escreverFrase("A UC não está associada a nenhum curso.");
+        }
+    }
+
+    public void exibirInformacoesUC(UnidadeCurricular uc) {
+        System.out.println("Informações da UC:");
+        System.out.println("\tDesignação: " + uc.getDesignacao());
+        System.out.println("\tRegente: " + uc.getRegente().getNome());
+
+        List<Professor> equipeDocente = uc.getEquipaDocente();
+        System.out.println("\tEquipe Docente:");
+        for (Professor professor : equipeDocente) {
+            System.out.println("\t- " + professor.getNome());
+        }
+
+        List<SumarioAula> sumarios = uc.getSumarios();
+        System.out.println("\tSumários de Aula:");
+        for (SumarioAula sumario : sumarios) {
+            System.out.println("\t- Tipo: " + sumario.getTipo() + ", Data: " + sumario.getData());
+        }
+    }
+
+    public String GerarNumeroMecanografico(Universidade universidade, int TIPO) {
+        String UltimaNumeroMecanografico = "";
+        String proximoNumeroMecanografico = "";
+        String maiorNumeroMecanografico = "";
+        if (TIPO == 1) { // professores
+            List<Professor> professores = universidade.getProfessores();
+            if (!professores.isEmpty()) {
+                Professor ultimoProfessor = professores.get(professores.size() - 1);
+                UltimaNumeroMecanografico = ultimoProfessor.getNumeroMecanografico();
+                String parteNumerica = UltimaNumeroMecanografico.substring(1);
+                int numeroInteiro = Integer.parseInt(parteNumerica);
+                numeroInteiro++;
+                proximoNumeroMecanografico = UltimaNumeroMecanografico.substring(0, 1) + String.format("%06d", numeroInteiro);
+            } else {
+                proximoNumeroMecanografico = "D000001";
+            }
+        } else if (TIPO == 2) { // alunos
+            List<Curso> listaCursos = universidade.getCursos();
+            boolean alunosEncontrados = false;
+            for (Curso curso : listaCursos) {
+                List<Aluno> listaAlunos = curso.getAlunos();
+                if (!listaAlunos.isEmpty()) {
+                    alunosEncontrados = true;
+                    for (Aluno aluno : listaAlunos) {
+                        String numeroMecanografico = aluno.getNumeroMecanografico();
+                        if (numeroMecanografico.compareTo(maiorNumeroMecanografico) > 0) {
+                            maiorNumeroMecanografico = numeroMecanografico;
+                        }
+                    }
+                }
+            }
+            if (alunosEncontrados) {
+                int numero = Integer.parseInt(maiorNumeroMecanografico.substring(1));
+                numero++;
+                return String.format("A%06d", numero);
+            } else {
+                proximoNumeroMecanografico = "A000001";
+            }
+        }
+        return proximoNumeroMecanografico;
     }
 }
