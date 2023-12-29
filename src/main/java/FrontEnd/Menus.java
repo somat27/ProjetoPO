@@ -5,6 +5,7 @@ package FrontEnd;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 import BackEnd.*;
+import FrontEnd.Consola;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -112,14 +113,14 @@ public class Menus {
         }
 
         String resposta = consola.lerStringLowerCase("\nQuer sair do Programa? (SIM/NAO): ");
-        if (resposta.equals("sim")) 
+        if (resposta.equals("sim")) {
             System.out.println("Saindo do Programa...");
-        else 
+        } else {
             MenuLogin();
+        }
     }
 
     // MENUS ADMINISTRADOR
-
     public void MenuAdministrador() throws InterruptedException {
         consola.escreverFrase("Menu Administrador\n");
 
@@ -270,7 +271,7 @@ public class Menus {
     private void menuGestaoCursos() throws InterruptedException {
         int opcao = 0;
         String nomeCurso;
-        Curso curso;
+        Curso curso = null;
         do {
             consola.escreverFrase("\nMenu Gestão de Cursos:");
             consola.escreverFrase("1. Adicionar Curso");
@@ -284,13 +285,18 @@ public class Menus {
                 case 1:
                     do {
                         nomeCurso = consola.lerString("Nome do Curso: ");
-                        
+
                         if (universidade.encontrarCurso(nomeCurso) != null) {
                             consola.escreverErro("Já existe um curso com o mesmo nome. Por favor, escolha outro nome.");
                         }
                     } while (universidade.encontrarCurso(nomeCurso) != null);
 
-                    consola.listarProfessores(universidade);
+                    // Listar professores disponíveis para serem diretores do curso
+                    consola.listarProfessoresDisponiveis(universidade, null); // Passando null como diretorAtual para listar todos os professores
+
+                    // Alteração aqui: Remover o diretorAtual da lista de professores disponíveis
+                    consola.removerDiretorAtualDaLista(universidade, null);
+
                     String numeroMecanograficoDiretor = consola.lerString("Número Mecanográfico do Diretor do Curso: ");
                     Professor diretorCurso = universidade.encontrarProfessor(numeroMecanograficoDiretor);
 
@@ -305,43 +311,66 @@ public class Menus {
                     } else {
                         consola.escreverErro("Diretor de Curso não encontrado.");
                     }
+
                     consola.PressEntertoContinue();
                     break;
+
                 case 2:
+                    do {
+                        consola.listarCursos(universidade);
+                        nomeCurso = consola.lerString("Nome do Curso a Remover: ");
+                        curso = universidade.encontrarCursoPorDesignacao(nomeCurso);
+
+                        if (curso == null) {
+                            consola.escreverErro("Curso não encontrado. Por favor, insira um nome de curso válido.");
+                        }
+
+                    } while (curso == null);
+
+                    universidade.removerCurso(curso.getDesignacao());
+                    consola.escreverFrase("Curso removido com sucesso!");
+                    ficheiro.guarda_dados(universidade);
+                    consola.PressEntertoContinue();
+                    break;
+
+                case 3:
                     consola.listarCursos(universidade);
-                    nomeCurso = consola.lerString("Nome do Curso a Remover: ");
+                    nomeCurso = consola.lerString("Nome do Curso: ");
                     curso = universidade.encontrarCursoPorDesignacao(nomeCurso);
 
-                    if (curso != null) {
-                        universidade.removerCurso(curso.getDesignacao());
-                        consola.escreverFrase("Curso removido com sucesso!");
-                        ficheiro.guarda_dados(universidade);
+                    if (curso != null) { // Verifica se o curso foi encontrado
+
+                        // Obter o diretor atual do curso
+                        Professor diretorAtual = curso.getDiretorCurso();
+
+                        // Listar o diretor atual e os demais professores
+                        consola.escreverFrase("Diretor de Curso Atual: \nNúmero Mecanográfico: " + diretorAtual.getNumeroMecanografico() + " | Nome: " + diretorAtual.getNome());
+                        consola.escreverFrase("Outros Professores Disponíveis:");
+                        consola.listarProfessoresDisponiveis(universidade, diretorAtual);
+
+                        String novoDiretorNumeroMecanografico = consola.lerString("Novo Número Mecanográfico do Diretor do Curso: ");
+
+                        // Verificar se o novo diretor é o diretor atual
+                        if (novoDiretorNumeroMecanografico.equals(diretorAtual.getNumeroMecanografico())) {
+                            consola.escreverErro("O diretor atual do curso não pode ser escolhido como novo diretor.");
+                        } else {
+                            Professor novoDiretorCurso = universidade.encontrarProfessor(novoDiretorNumeroMecanografico);
+
+                            if (novoDiretorCurso != null) {
+                                // Modificar diretamente o atributo diretorCurso
+                                curso.setDiretorCurso(novoDiretorCurso);
+                                consola.escreverFrase("Diretor do Curso alterado com sucesso!");
+                                ficheiro.guarda_dados(universidade);
+                            } else {
+                                consola.escreverErro("Novo Diretor de Curso não encontrado.");
+                            }
+                        }
                     } else {
                         consola.escreverErro("Curso não encontrado.");
                     }
-                    consola.PressEntertoContinue();
                     break;
-                case 3:
-                    boolean cursoEncontrado = false;
 
-                    do {
-                        consola.listarCursos(universidade);
-                        nomeCurso = consola.lerString("Nome do Curso: ");
-                        curso = universidade.encontrarCursoPorDesignacao(nomeCurso);
 
-                        if (curso != null) {
-                            String novaDesignacao = consola.lerString("Nova Designação: ");
-                            curso.setDesignacao(novaDesignacao);
-
-                            consola.escreverFrase("Informações do Curso alteradas com sucesso!");
-                            ficheiro.guarda_dados(universidade);
-                            cursoEncontrado = true;
-                        } else {
-                            consola.escreverErro("Curso não encontrado. Certifique-se de que digitou corretamente o nome do curso.");
-                        }
-                    } while (!cursoEncontrado);
-                    consola.PressEntertoContinue();
-                    break;
                 case 0:
                     consola.escreverFrase("A voltar ao Menu Administrador.");
                     break;
@@ -616,9 +645,7 @@ public class Menus {
     }
 
     // MENUS ADMINISTRADOR
-
     // MENUS PROFESSOR
-    
     public void MenuProfessor(Professor professor) throws InterruptedException {
         List<UnidadeCurricular> servicoDocente = professor.getServicoDocente();
         if (servicoDocente.size() < 1) {
@@ -741,9 +768,7 @@ public class Menus {
     }
 
     // MENUS PROFESSOR
-
     // MENUS DIRETOR DE CURSO
-
     public void MenuDiretorCurso(Professor professor) throws InterruptedException {
         Curso cursoAssociado = null;
         List<Curso> cursos = universidade.getCursos();
@@ -790,9 +815,7 @@ public class Menus {
     }
 
     // MENUS DIRETOR DE CURSO
-
     // MENUS REGENTES DA UNIDADE CURRICULAR
-
     public void MenuRegenteUnidadeCurricular(Professor professor) throws InterruptedException {
         Curso cursoAssociado = null;
         UnidadeCurricular UnidadeCurricularAssociada = null;

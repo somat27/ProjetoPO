@@ -11,6 +11,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import BackEnd.Aluno;
 import BackEnd.Curso;
@@ -18,14 +20,16 @@ import BackEnd.Professor;
 import BackEnd.SumarioAula;
 import BackEnd.UnidadeCurricular;
 import BackEnd.Universidade;
+
 /**
  *
  * @author tomas
  */
 public class Consola {
+
     private final Scanner Leitor = new Scanner(System.in);
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    
+
     public void erroOpcaoInvalida() {
         System.err.println("\nErro\nNumero invalido\nPor favor insira um numero dos indicados\nPressione enter para continuar...");
         Leitor.nextLine();
@@ -82,12 +86,12 @@ public class Consola {
 
         return numero;
     }
-    
-    public void PressEntertoContinue(){
+
+    public void PressEntertoContinue() {
         System.out.println("\nPressione Enter para continuar...");
         Leitor.nextLine();
     }
-    
+
     public String getHoraAtual() {
         LocalDateTime agora = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
@@ -95,7 +99,6 @@ public class Consola {
     }
 
     // METODOS PARA VERIFICAÇÃO DE HORAS
-
     public LocalDate VerificarSeValida(String dataIntroduzida) {
         try {
             String[] parteDatas = dataIntroduzida.split("/");
@@ -139,9 +142,7 @@ public class Consola {
     }
 
     // METODOS PARA VERIFICAÇÃO DE HORAS
-
     // METODOS PARA O MENU ADMINISTRADOR
-
     public void listarCursos(Universidade universidade) {
         List<Curso> cursos = universidade.getCursos();
         escreverFrase("Lista de Cursos:");
@@ -207,6 +208,23 @@ public class Consola {
         }
     }
 
+    public void listarProfessoresDisponiveis(Universidade universidade, Professor diretorAtual) {
+    List<Professor> professores = universidade.getProfessores();
+
+    escreverFrase("Professores Disponíveis para serem Diretores do Curso:");
+
+    for (Professor professor : professores) {
+        // Verifica se o professor não é diretor de nenhum curso
+        if (!universidade.eDiretorDeCurso(professor)) {
+            // Verifica se o professor não é o diretor atual do curso
+            if (diretorAtual == null || !professor.getNumeroMecanografico().equals(diretorAtual.getNumeroMecanografico())) {
+                escreverFrase("\tNúmero Mecanográfico: " + professor.getNumeroMecanografico() + " | Nome: " + professor.getNome());
+            }
+        }
+    }
+}
+
+
     public void exibirInformacoesUC(UnidadeCurricular uc) {
         System.out.println("Informações da UC:");
         System.out.println("\tDesignação: " + uc.getDesignacao());
@@ -223,6 +241,20 @@ public class Consola {
         for (SumarioAula sumario : sumarios) {
             System.out.println("\t- Tipo: " + sumario.getTipo() + ", Data: " + sumario.getData());
         }
+    }
+
+    public void removerDiretorAtualDaLista(Universidade universidade, Professor diretorAtual) {
+        List<Professor> professores = universidade.getProfessores();
+
+        for (Iterator<Professor> iterator = professores.iterator(); iterator.hasNext();) {
+            Professor professor = iterator.next();
+
+            // Remover o diretor atual da lista
+            if (diretorAtual != null && professor.getNumeroMecanografico().equals(diretorAtual.getNumeroMecanografico())) {
+                iterator.remove();
+            }
+        }
+
     }
 
     public String GerarNumeroMecanografico(Universidade universidade, int TIPO) {

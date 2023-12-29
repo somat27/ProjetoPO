@@ -7,6 +7,7 @@ package BackEnd;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import FrontEnd.Consola;
 
 /**
  *
@@ -146,6 +147,29 @@ public class Universidade implements Serializable {
             }
         }
         return null;
+    }
+
+  /*  public boolean existeDiretorCurso(Consola consola) {
+        consola.listarCursos(this);
+
+        for (Curso curso : getCursos()) {
+            Professor diretor = curso.getDiretorCurso();
+            if (diretor != null) {
+                consola.escreverFrase("Diretor do Curso " + curso.getDesignacao() + ": " + diretor.getNome());
+                return true;
+            }
+        }
+        consola.escreverFrase("Nenhum diretor de curso encontrado.");
+        return false;
+    }*/
+
+    public boolean eDiretorDeCurso(Professor professor) {
+        for (Curso curso : cursos) {
+            if (curso.getDiretorCurso() != null && curso.getDiretorCurso().equals(professor)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
