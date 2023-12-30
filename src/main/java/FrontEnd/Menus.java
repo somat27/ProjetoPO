@@ -458,7 +458,7 @@ public class Menus {
                                 consola.escreverFrase("Regente não encontrado. Não foi possível criar UC.");
                             }
                         }
-                    } while (nomeRepetido); // Repete se já existe uma UC com o mesmo nome
+                    } while (nomeRepetido);
                     consola.PressEntertoContinue();
                     break;
                 case 2:
@@ -499,7 +499,6 @@ public class Menus {
                             consola.escreverFrase("\nMenu de Edição de Unidades Curriculares (UCs)");
                             consola.escreverFrase("1. Editar nome da UC");
                             consola.escreverFrase("2. Desassociar UC de um curso");
-                            // Adicione mais opções de edição conforme necessário
                             consola.escreverFrase("0. Voltar");
 
                             int opcaoEdicao = consola.lerInteiro("Escolha uma opção: ");
@@ -559,7 +558,12 @@ public class Menus {
 
             switch (opcao) {
                 case 1:
-                    consola.listarCursos(universidade);
+                    cursos = universidade.getCursos();
+                    if (cursos.isEmpty()) {
+                        consola.escreverFrase("Lista vazia, a voltar ao menu de listagem.");
+                    } else {
+                        consola.listarCursos(universidade);
+                    }
                     consola.PressEntertoContinue();
                     break;
                 case 2:
@@ -569,8 +573,12 @@ public class Menus {
 
                     if (cursoListarUCs != null) {
                         List<UnidadeCurricular> ucs = cursoListarUCs.getUCs();
-                        for (UnidadeCurricular uc : ucs) {
-                            consola.escreverFrase("\t" + uc.getDesignacao());
+                        if (ucs.isEmpty()) {
+                            consola.escreverFrase("Lista vazia, a voltar ao menu de listagem.");
+                        } else {
+                            for (UnidadeCurricular uc : ucs) {
+                                consola.escreverFrase("\t" + uc.getDesignacao());
+                            }
                         }
                     } else {
                         consola.escreverErro("Curso não encontrado.");
@@ -579,17 +587,29 @@ public class Menus {
                     break;
                 case 3:
                     cursos = universidade.getCursos();
+                    boolean listaVaziaAlunos = true;
                     consola.escreverFrase("Lista de Alunos:");
                     for (Curso c : cursos) {
                         List<Aluno> alunos = c.getAlunos();
-                        for (Aluno aluno : alunos) {
-                            consola.escreverFrase("\t" + aluno.getNome());
+                        if (!alunos.isEmpty()) {
+                            listaVaziaAlunos = false;
+                            for (Aluno aluno : alunos) {
+                                consola.escreverFrase("\t" + aluno.getNome());
+                            }
                         }
+                    }
+                    if (listaVaziaAlunos) {
+                        consola.escreverFrase("Lista vazia, a voltar ao menu de listagem.");
                     }
                     consola.PressEntertoContinue();
                     break;
                 case 4:
-                    consola.listarProfessores(universidade);
+                    List<Professor> professores = universidade.getProfessores();
+                    if (professores.isEmpty()) {
+                        consola.escreverFrase("Lista vazia, a voltar ao menu de listagem.");
+                    } else {
+                        consola.listarProfessores(universidade);
+                    }
                     consola.PressEntertoContinue();
                     break;
                 case 0:
