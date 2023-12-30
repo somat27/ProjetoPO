@@ -7,7 +7,6 @@ package BackEnd;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import FrontEnd.Consola;
 
 /**
  *
@@ -144,6 +143,16 @@ public class Universidade implements Serializable {
                 if (uc.getDesignacao().equalsIgnoreCase(designacao)) {
                     return uc;
                 }
+            }
+        }
+        return null;
+    }
+
+    public UnidadeCurricular encontrarUCporCurso(Curso curso, String designacaoCurso) {
+        List<UnidadeCurricular> ucs = curso.getUCs();
+        for (UnidadeCurricular uc : ucs) {
+            if (uc.getDesignacao().equalsIgnoreCase(designacaoCurso)) {
+                return uc;
             }
         }
         return null;

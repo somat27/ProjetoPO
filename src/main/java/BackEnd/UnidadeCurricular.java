@@ -63,4 +63,8 @@ public class UnidadeCurricular implements Serializable {
     public void adicionarEquipaDocente(Professor professor) {
         equipeDocente.add(professor);
     }
+
+    public void removerEquipaDocente(Professor professor) {
+        equipeDocente.remove(professor);
+    }
 }

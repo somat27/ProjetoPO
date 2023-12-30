@@ -5,15 +5,13 @@
 package BackEnd;
 
 import java.util.List;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  *
  * @author tomas
  */
-public class Professor extends Pessoa implements Serializable {
+public class Professor extends Pessoa {
     private String dataInicioFuncoes;
     private List<UnidadeCurricular> servicoDocente = new ArrayList<>();
 
@@ -37,6 +35,10 @@ public class Professor extends Pessoa implements Serializable {
 
     public void adicionarAoServicoDocente(UnidadeCurricular uc) {
         servicoDocente.add(uc);
+    }
+
+    public void removerDoServicoDocente(UnidadeCurricular uc) {
+        servicoDocente.remove(uc);
     }
     
     public void criarSumario(UnidadeCurricular uc, SumarioAula novoSumario) {

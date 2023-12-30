@@ -4,13 +4,11 @@
  */
 package BackEnd;
 
-import java.io.Serializable;
-
 /**
  *
  * @author tomas
  */
-public class Aluno extends Pessoa implements Serializable {
+public class Aluno extends Pessoa {
     public Aluno(String nome, String numeroMecanografico) {
         super(nome, numeroMecanografico);
     }

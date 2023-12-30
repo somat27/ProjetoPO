@@ -11,8 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Iterator;
-import java.util.stream.Collectors;
 
 import BackEnd.Aluno;
 import BackEnd.Curso;
@@ -142,6 +140,7 @@ public class Consola {
     }
 
     // METODOS PARA VERIFICAÇÃO DE HORAS
+
     // METODOS PARA O MENU ADMINISTRADOR
     public void listarCursos(Universidade universidade) {
         List<Curso> cursos = universidade.getCursos();
@@ -170,6 +169,14 @@ public class Consola {
         }
     }
 
+    public void listarUCsCurso(Curso curso) {
+        escreverFrase("Lista de Unidades Curriculares (UCs):");
+        List<UnidadeCurricular> ucs = curso.getUCs();
+        for (UnidadeCurricular uc : ucs) {
+            escreverFrase("\t" + uc.getDesignacao());
+        }
+    }
+
     public void listarAlunosUC(Curso curso) {
         List<Aluno> listaAlunos = curso.getAlunos();
         for (Aluno aluno : listaAlunos) {
@@ -190,14 +197,12 @@ public class Consola {
     public void listarCursosAssociados(Universidade universidade, UnidadeCurricular uc) {
         List<Curso> cursosAssociados = new ArrayList<>();
 
-        // Encontrar cursos associados à UC
         for (Curso curso : universidade.getCursos()) {
             if (curso.getUCs().contains(uc)) {
                 cursosAssociados.add(curso);
             }
         }
-
-        // Listar cursos associados
+        
         if (!cursosAssociados.isEmpty()) {
             escreverFrase("\nCursos associados à UC " + uc.getDesignacao() + ":");
             for (int i = 0; i < cursosAssociados.size(); i++) {
@@ -231,6 +236,19 @@ public class Consola {
         }
     
         return professoresRegentesDisponiveis;
+    }    
+
+    public List<Professor> guardarProfessoresDisponiveisUC(Universidade universidade, UnidadeCurricular uc) {
+        List<Professor> professoresDisponiveis = new ArrayList<>();
+        
+        for (Professor professor : universidade.getProfessores()) {
+            List<UnidadeCurricular> listaUCS = professor.getServicoDocente();
+            if (!listaUCS.contains(uc)) {
+                professoresDisponiveis.add(professor);
+            }
+        }
+        
+        return professoresDisponiveis;
     }
 
     public void exibirInformacoesUC(UnidadeCurricular uc) {
