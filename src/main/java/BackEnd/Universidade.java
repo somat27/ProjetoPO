@@ -159,5 +159,14 @@ public class Universidade implements Serializable {
         return false;
     }
 
+    // Na classe Universidade
+    public boolean eRegenteDeUC(Professor professor) {
+        for (UnidadeCurricular uc : UCs) {
+            if (uc.getRegente() != null && uc.getRegente().equals(professor)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
