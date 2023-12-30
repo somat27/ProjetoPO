@@ -158,7 +158,6 @@ public class Universidade implements Serializable {
         return false;
     }
 
-    // Na classe Universidade
     public boolean eRegenteDeUC(Professor professor) {
         List<UnidadeCurricular> UCs = getUCs();
         for (UnidadeCurricular uc : UCs) {

@@ -148,9 +148,6 @@ public class Menus {
                 case 4:
                     menuListagem();
                     break;
-                case 5:
-                    menuAtribuir();
-                    break;
                 case 0:
                     consola.escreverFrase("Sair do Menu Administrador.");
                     break;
@@ -329,7 +326,7 @@ public class Menus {
                     universidade.adicionarCurso(novoCurso);
 
                     consola.escreverFrase("Curso adicionado com sucesso!");
-                    
+
                     consola.PressEntertoContinue();
                     break;
 
@@ -452,7 +449,6 @@ public class Menus {
                             Professor regente = null;
 
                             do {
-                                // Listar professores disponíveis para serem regentes
                                 consola.escreverFrase("Professores Disponíveis para serem Regentes de UC:");
 
                                 for (Professor professor : professoresRegentesDisponiveis) {
@@ -462,7 +458,6 @@ public class Menus {
                                 }
 
                                 String numeroMecRegente = consola.lerString("Digite o número mecanográfico do regente da UC: ");
-                                // regente = universidade.encontrarProfessor(numeroMecRegente);
 
                                 for (Professor professor : professoresRegentesDisponiveis) {
                                     if (professor.getNumeroMecanografico().equals(numeroMecRegente)) {
@@ -473,7 +468,7 @@ public class Menus {
                                 }
 
                                 if (!regenteEncontrado) {
-                                    consola.escreverErro("Diretor de Curso não encontrado. Tente novamente.");
+                                    consola.escreverErro("Número mecanográfico inválido. Tente novamente.");
                                 }
                             } while (!regenteEncontrado);
 
@@ -506,17 +501,23 @@ public class Menus {
                     consola.escreverFrase("\nRemover UC");
 
                     consola.listarUCs(universidade);
-                    designacaoUC = consola.lerString("Digite o nome da UC para remover: ");
+                    boolean ucRemovida = false;
 
-                    uc = universidade.encontrarUCporDesignacao(designacaoUC);
+                    while (!ucRemovida) {
+                        designacaoUC = consola.lerString("Digite o nome da UC para remover: ");
 
-                    if (uc != null) {
-                        universidade.removerUC(uc.getDesignacao());
-                        consola.escreverFrase("UC removida com sucesso!");
-                        ficheiro.guarda_dados(universidade);
-                    } else {
-                        consola.escreverFrase("UC não encontrada.");
+                        uc = universidade.encontrarUCporDesignacao(designacaoUC);
+
+                        if (uc != null) {
+                            universidade.removerUC(uc.getDesignacao());
+                            consola.escreverFrase("UC removida com sucesso!");
+                            ficheiro.guarda_dados(universidade);
+                            ucRemovida = true;
+                        } else {
+                            consola.escreverFrase("UC não encontrada. Tente novamente.");
+                        }
                     }
+
                     consola.PressEntertoContinue();
                     break;
 
@@ -537,7 +538,7 @@ public class Menus {
                             do {
                                 consola.escreverFrase("\nMenu de Edição de Unidades Curriculares (UCs)");
                                 consola.escreverFrase("1. Editar nome da UC");
-                                consola.escreverFrase("2. Desassociar UC de um curso");
+                                consola.escreverFrase("2. Alterar Regente de UC");
                                 consola.escreverFrase("0. Voltar");
 
                                 opcaoEdicao = consola.lerInteiro("Escolha uma opção: ");
@@ -551,17 +552,35 @@ public class Menus {
                                         break;
 
                                     case 2:
-                                        consola.listarCursosAssociados(universidade, uc);
-                                        String designacaoCurso = consola.lerString("Digite a designação do curso para desassociar a UC: ");
-                                        Curso cursoDesassociar = universidade.encontrarCursoPorDesignacao(designacaoCurso);
+                                        consola.escreverFrase("\nEditar Regente da UC");
 
-                                        if (cursoDesassociar != null) {
-                                            cursoDesassociar.removerUC(uc.getDesignacao());
-                                            consola.escreverFrase("UC desassociada do curso com sucesso!");
-                                            ficheiro.guarda_dados(universidade);
-                                        } else {
-                                            consola.escreverFrase("Curso não encontrado.");
+                                        consola.exibirInformacoesUC(uc);
+
+                                        professoresRegentesDisponiveis = consola.listarProfessoresRegentesDisponiveis(universidade);
+
+                                        consola.escreverFrase("Professores Disponíveis para serem Regentes de UC:");
+                                        for (Professor professor : professoresRegentesDisponiveis) {
+                                            consola.escreverFrase("\tNúmero Mecanográfico: " + professor.getNumeroMecanografico() + " | Nome: " + professor.getNome());
                                         }
+
+                                        boolean regenteEncontrado = false;
+                                        Professor regenteAtual = uc.getRegente();
+
+                                        do {
+                                            String numeroMecRegente = consola.lerString("Digite o número mecanográfico do novo regente da UC: ");
+                                            Professor novoRegente = universidade.encontrarProfessor(numeroMecRegente);
+
+                                            if (novoRegente != null && !novoRegente.equals(regenteAtual) && !universidade.eRegenteDeUC(novoRegente)) {
+                                                uc.setRegente(novoRegente);
+                                                consola.escreverFrase("Regente da UC editado com sucesso!");
+                                                ficheiro.guarda_dados(universidade);
+                                                regenteEncontrado = true;
+                                            } else {
+                                                consola.escreverFrase("Número mecanográfico inválido. Tente novamente.");
+                                            }
+
+                                        } while (!regenteEncontrado);
+
                                         break;
 
                                     case 0:
@@ -658,73 +677,6 @@ public class Menus {
                         consola.escreverFrase("Lista vazia, a voltar ao menu de listagem.");
                     } else {
                         consola.listarProfessores(universidade);
-                    }
-                    consola.PressEntertoContinue();
-                    break;
-                case 0:
-                    consola.escreverFrase("A voltar ao Menu Administrador.");
-                    break;
-                default:
-                    consola.escreverErro("Opção inválida. Tente novamente.");
-            }
-        } while (opcao != 0);
-    }
-
-    private void menuAtribuir() {
-        int opcao = 0;
-        do {
-            consola.escreverFrase("1. Atribuir Direção de Curso");
-            consola.escreverFrase("2. Atribuir Regência de UC");
-            consola.escreverFrase("0. Voltar");
-
-            opcao = consola.lerInteiro("Escolha uma opção: ");
-
-            switch (opcao) {
-                case 1:
-                    consola.listarProfessores(universidade);
-                    String numeroMecanograficoProfessor1 = consola.lerString("Número Mecanográfico do Professor: ");
-                    Professor professor1 = universidade.encontrarProfessor(numeroMecanograficoProfessor1);
-
-                    if (professor1 != null) {
-                        consola.escreverFrase("Escolha o Curso para atribuir a Direção:");
-                        consola.listarCursos(universidade);
-
-                        String designacaoCurso = consola.lerString("Designação do Curso: ");
-                        Curso curso = universidade.encontrarCursoPorDesignacao(designacaoCurso);
-
-                        if (curso != null) {
-                            curso.setDiretorCurso(professor1);
-                            consola.escreverFrase("Direção de Curso atribuída com sucesso!");
-                            ficheiro.guarda_dados(universidade);
-                        } else {
-                            consola.escreverErro("Curso não encontrado.");
-                        }
-                    } else {
-                        consola.escreverErro("Professor não encontrado.");
-                    }
-                    consola.PressEntertoContinue();
-                    break;
-                case 2:
-                    consola.listarProfessores(universidade);
-                    String numeroMecanograficoProfessor2 = consola.lerString("Número Mecanográfico do Professor: ");
-                    Professor professor2 = universidade.encontrarProfessor(numeroMecanograficoProfessor2);
-
-                    if (professor2 != null) {
-                        consola.escreverFrase("Escolha a UC para atribuir a Regência:");
-                        consola.listarUCs(universidade);
-
-                        String designacaoUC = consola.lerString("Designação da UC: ");
-                        UnidadeCurricular uc = universidade.encontrarUCporDesignacao(designacaoUC);
-
-                        if (uc != null) {
-                            uc.setRegente(professor2);
-                            consola.escreverFrase("Regência de UC atribuída com sucesso!");
-                            ficheiro.guarda_dados(universidade);
-                        } else {
-                            consola.escreverErro("UC não encontrada.");
-                        }
-                    } else {
-                        consola.escreverErro("Professor não encontrado.");
                     }
                     consola.PressEntertoContinue();
                     break;
