@@ -17,7 +17,6 @@ public class Universidade implements Serializable {
 
     private List<Professor> professores = new ArrayList<>();
     private List<Curso> cursos = new ArrayList<>();
-    private List<UnidadeCurricular> UCs = new ArrayList<>();
 
     public Universidade() {
     }
@@ -161,6 +160,7 @@ public class Universidade implements Serializable {
 
     // Na classe Universidade
     public boolean eRegenteDeUC(Professor professor) {
+        List<UnidadeCurricular> UCs = getUCs();
         for (UnidadeCurricular uc : UCs) {
             if (uc.getRegente() != null && uc.getRegente().equals(professor)) {
                 return true;

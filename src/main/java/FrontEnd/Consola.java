@@ -210,29 +210,26 @@ public class Consola {
 
     public List<Professor> listarProfessoresDisponiveis(Universidade universidade, Professor diretorAtual) {
         List<Professor> professoresDisponiveis = new ArrayList<>();
-
-        for (Iterator<Professor> iterator = universidade.getProfessores().iterator(); iterator.hasNext();) {
-            Professor professor = iterator.next();
-
+    
+        for (Professor professor : universidade.getProfessores()) {
             if (!universidade.eDiretorDeCurso(professor)) {
                 professoresDisponiveis.add(professor);
             }
         }
-
+    
         return professoresDisponiveis;
     }
+    
 
-    public List<Professor> listarProfessoresRegentesDisponiveis(Universidade universidade, Professor regenteAtual) {
+    public List<Professor> listarProfessoresRegentesDisponiveis(Universidade universidade) {
         List<Professor> professoresRegentesDisponiveis = new ArrayList<>();
 
-        for (Iterator<Professor> iterator = universidade.getProfessores().iterator(); iterator.hasNext();) {
-            Professor professor = iterator.next();
-
+        for (Professor professor : universidade.getProfessores()) {
             if (!universidade.eRegenteDeUC(professor)) {
                 professoresRegentesDisponiveis.add(professor);
             }
         }
-
+    
         return professoresRegentesDisponiveis;
     }
 
@@ -256,30 +253,22 @@ public class Consola {
 
     public void removerDiretorAtualDaLista(Universidade universidade, Professor diretorAtual) {
         List<Professor> professores = universidade.getProfessores();
-
-        for (Iterator<Professor> iterator = professores.iterator(); iterator.hasNext();) {
-            Professor professor = iterator.next();
-
-            // Remover o diretor atual da lista
+    
+        for (Professor professor : professores) {
             if (diretorAtual != null && professor.getNumeroMecanografico().equals(diretorAtual.getNumeroMecanografico())) {
-                iterator.remove();
+                professores.remove(professor);
             }
         }
-
     }
-
-    public void removerRegenteAtualDaLista(Universidade universidade, Professor RegenteAtual) {
+    
+    public void removerRegenteAtualDaLista(Universidade universidade, Professor regenteAtual) {
         List<Professor> professores = universidade.getProfessores();
-
-        for (Iterator<Professor> iterator = professores.iterator(); iterator.hasNext();) {
-            Professor professor = iterator.next();
-
-            // Remover o diretor atual da lista
-            if (RegenteAtual != null && professor.getNumeroMecanografico().equals(RegenteAtual.getNumeroMecanografico())) {
-                iterator.remove();
+    
+        for (Professor professor : professores) {
+            if (regenteAtual != null && professor.getNumeroMecanografico().equals(regenteAtual.getNumeroMecanografico())) {
+                professores.remove(professor);
             }
         }
-
     }
 
     public String GerarNumeroMecanografico(Universidade universidade, int TIPO) {

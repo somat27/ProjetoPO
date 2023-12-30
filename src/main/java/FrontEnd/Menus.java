@@ -441,11 +441,10 @@ public class Menus {
                         if (nomeRepetido) {
                             consola.escreverFrase("Já existe uma UC com o mesmo nome. Por favor, escolha outro nome.");
                         } else {
-                            professoresRegentesDisponiveis = consola.listarProfessoresRegentesDisponiveis(universidade, null);
+                            professoresRegentesDisponiveis = consola.listarProfessoresRegentesDisponiveis(universidade);
 
                             if (professoresRegentesDisponiveis.isEmpty()) {
                                 consola.escreverFrase("Não há professores disponíveis para serem regentes de UC.\nA voltar ao Menu de UCs.");
-                                consola.PressEntertoContinue();
                                 break;
                             }
 
@@ -463,7 +462,7 @@ public class Menus {
                                 }
 
                                 String numeroMecRegente = consola.lerString("Digite o número mecanográfico do regente da UC: ");
-                                regente = universidade.encontrarProfessor(numeroMecRegente);
+                                // regente = universidade.encontrarProfessor(numeroMecRegente);
 
                                 for (Professor professor : professoresRegentesDisponiveis) {
                                     if (professor.getNumeroMecanografico().equals(numeroMecRegente)) {
@@ -503,7 +502,6 @@ public class Menus {
                     } while (nomeRepetido);
                     consola.PressEntertoContinue();
                     break;
-
                 case 2:
                     consola.escreverFrase("\nRemover UC");
 
@@ -743,7 +741,7 @@ public class Menus {
     // MENUS PROFESSOR
     public void MenuProfessor(Professor professor) throws InterruptedException {
         List<UnidadeCurricular> servicoDocente = professor.getServicoDocente();
-        if (servicoDocente.size() < 1) {
+        if (servicoDocente.isEmpty()) {
             consola.escreverErro("Nao tens Disciplinas associadas a ti!");
             consola.PressEntertoContinue();
             MenuLogin();
