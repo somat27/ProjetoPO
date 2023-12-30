@@ -310,13 +310,19 @@ public class Menus {
                         }
 
                         String numeroMecanograficoDiretor = consola.lerString("Número Mecanográfico do Diretor do Curso: ");
-                        diretorCurso = universidade.encontrarProfessor(numeroMecanograficoDiretor);
 
-                        if (diretorCurso != null) {
-                            diretorEncontrado = true;
-                        } else {
-                            consola.escreverErro("Diretor de Curso não encontrado. Tente novamente.");
+                        for (Professor professor : professoresDisponiveis) {
+                            if (professor.getNumeroMecanografico().equals(numeroMecanograficoDiretor)) {
+                                diretorCurso = professor;
+                                diretorEncontrado = true;
+                                break;
+                            }
                         }
+
+                        if (!diretorEncontrado) {
+                            consola.escreverErro("Número mecanográfico inválido. Tente novamente.");
+                        }
+
                     } while (!diretorEncontrado);
 
                     Curso novoCurso = new Curso(nomeCurso, diretorCurso);
@@ -350,11 +356,9 @@ public class Menus {
                     nomeCurso = consola.lerString("Nome do Curso: ");
                     curso = universidade.encontrarCursoPorDesignacao(nomeCurso);
 
-                    if (curso != null) { // Verifica se o curso foi encontrado
-                        // Obter o diretor atual do curso
+                    if (curso != null) { 
                         Professor diretorAtual = curso.getDiretorCurso();
 
-                        // Listar o diretor atual e os demais professores
                         professoresDisponiveis = consola.listarProfessoresDisponiveis(universidade, diretorAtual);
 
                         if (professoresDisponiveis.isEmpty()) {
@@ -362,7 +366,7 @@ public class Menus {
                             consola.PressEntertoContinue();
                         } else {
                             consola.escreverFrase("Diretor de Curso Atual: \nNúmero Mecanográfico: " + diretorAtual.getNumeroMecanografico() + " | Nome: " + diretorAtual.getNome());
-                            consola.escreverFrase("Outros Professores Disponíveis:");
+                            consola.escreverFrase("Professores Disponíveis para serem Diretores do Curso:");
 
                             for (Professor professor : professoresDisponiveis) {
                                 consola.escreverFrase("\tNúmero Mecanográfico: " + professor.getNumeroMecanografico() + " | Nome: " + professor.getNome());
@@ -370,22 +374,26 @@ public class Menus {
 
                             boolean novoDiretorEncontrado = false;
                             while (!novoDiretorEncontrado) {
-                                String novoDiretorNumeroMecanografico = consola.lerString("Novo Número Mecanográfico do Diretor do Curso: ");
+                                String novoDiretorNumeroMecanografico = consola.lerString("Número Mecanográfico do novo Diretor do Curso: ");
 
-                                // Verificar se o novo diretor é o diretor atual
                                 if (novoDiretorNumeroMecanografico.equals(diretorAtual.getNumeroMecanografico())) {
                                     consola.escreverErro("O diretor atual do curso não pode ser escolhido como novo diretor.");
                                 } else {
                                     Professor novoDiretorCurso = universidade.encontrarProfessor(novoDiretorNumeroMecanografico);
 
-                                    if (novoDiretorCurso != null) {
-                                        // Modificar diretamente o atributo diretorCurso
+                                    if (novoDiretorCurso != null && professoresDisponiveis.contains(novoDiretorCurso)) {
                                         curso.setDiretorCurso(novoDiretorCurso);
                                         consola.escreverFrase("Diretor do Curso alterado com sucesso!");
                                         ficheiro.guarda_dados(universidade);
                                         novoDiretorEncontrado = true;
                                     } else {
-                                        consola.escreverErro("Número mecanográfico não encontrado. Tente novamente.");
+                                        consola.escreverErro("Número mecanográfico não encontrado ou não é um professor disponível. Tente novamente.");
+
+                                        consola.escreverFrase("Professores Disponíveis para serem Diretores do Curso:");
+
+                                        for (Professor professor : professoresDisponiveis) {
+                                            consola.escreverFrase("\tNúmero Mecanográfico: " + professor.getNumeroMecanografico() + " | Nome: " + professor.getNome());
+                                        }
                                     }
                                 }
                             }
