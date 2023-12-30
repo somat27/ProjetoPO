@@ -36,7 +36,6 @@ public class ProjetoPO {
         }
 
         Administrador administrador = carregarOuCriarAdministrador();
-        System.out.println(universidade.getProfessores());
         Menus menu = new Menus(universidade, consola, ficheiro, administrador);
         menu.MenuLogin();
     }

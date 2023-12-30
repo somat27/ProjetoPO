@@ -208,22 +208,21 @@ public class Consola {
         }
     }
 
-    public void listarProfessoresDisponiveis(Universidade universidade, Professor diretorAtual) {
-    List<Professor> professores = universidade.getProfessores();
+    public List<Professor> listarProfessoresDisponiveis(Universidade universidade, Professor diretorAtual) {
+        List<Professor> professoresDisponiveis = new ArrayList<>();
 
-    escreverFrase("Professores Disponíveis para serem Diretores do Curso:");
+        // Remover diretores de curso da lista
+        for (Iterator<Professor> iterator = universidade.getProfessores().iterator(); iterator.hasNext();) {
+            Professor professor = iterator.next();
 
-    for (Professor professor : professores) {
-        // Verifica se o professor não é diretor de nenhum curso
-        if (!universidade.eDiretorDeCurso(professor)) {
-            // Verifica se o professor não é o diretor atual do curso
-            if (diretorAtual == null || !professor.getNumeroMecanografico().equals(diretorAtual.getNumeroMecanografico())) {
-                escreverFrase("\tNúmero Mecanográfico: " + professor.getNumeroMecanografico() + " | Nome: " + professor.getNome());
+            if (!universidade.eDiretorDeCurso(professor)) {
+                professoresDisponiveis.add(professor);
             }
         }
-    }
-}
 
+
+        return professoresDisponiveis;
+    }
 
     public void exibirInformacoesUC(UnidadeCurricular uc) {
         System.out.println("Informações da UC:");

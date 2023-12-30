@@ -149,19 +149,6 @@ public class Universidade implements Serializable {
         return null;
     }
 
-  /*  public boolean existeDiretorCurso(Consola consola) {
-        consola.listarCursos(this);
-
-        for (Curso curso : getCursos()) {
-            Professor diretor = curso.getDiretorCurso();
-            if (diretor != null) {
-                consola.escreverFrase("Diretor do Curso " + curso.getDesignacao() + ": " + diretor.getNome());
-                return true;
-            }
-        }
-        consola.escreverFrase("Nenhum diretor de curso encontrado.");
-        return false;
-    }*/
 
     public boolean eDiretorDeCurso(Professor professor) {
         for (Curso curso : cursos) {
