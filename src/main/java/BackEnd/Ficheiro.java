@@ -57,7 +57,6 @@ public class Ficheiro {
       )
     ) {
       objectOut.writeObject(administrador);
-      System.out.println("Administrador salvo com sucesso no arquivo.");
     } catch (IOException e) {
       e.printStackTrace();
     }
